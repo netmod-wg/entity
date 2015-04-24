@@ -80,6 +80,7 @@ module ietf-entity {
       "Integer index for a physical entity or zero for no index";
   }
 
+  /**** Due to be removed *********
   typedef iana-physical-class {
     type enumeration {
       enum other {
@@ -129,6 +130,8 @@ module ietf-entity {
     reference
       "https://www.iana.org/assignments/ianaentity-mib/ianaentity-mib";
   }
+  *********************/
+
 
   typedef uuid-or-zero {
     type union {
@@ -457,7 +460,8 @@ EntPhysicalEntry ::= SEQUENCE {
       description
         "Administrative name assigned to this physical entity.
          No restrictions apply. Not required to be the same
-         as entPhysicalName";
+         as entPhysicalName. This is the console name in the
+         MIB module";
       // read-only column in MIB
     }
 
@@ -475,11 +479,14 @@ EntPhysicalEntry ::= SEQUENCE {
       // read-only in MIB
     }
 
+    /*************** due to be removed *****************
     leaf vendor-type {
       type identityref { base entity-vendor-type; }
       reference "RFC 6933: entPhysicalVendorType";
       // read-only in MIB
     }
+    *****************************************/
+
 
     leaf-list contained-in {
       type entity-physical-index-or-zero;
@@ -498,17 +505,12 @@ EntPhysicalEntry ::= SEQUENCE {
     }
 
     leaf class {
-      type iana-physical-class;
-      reference "RFC 6933: entPhysicalClass";
-      // read-only in MIB
-    }
-
-    leaf extended-class {
       type identityref {
         base entity-physical-class;
       }
       reference "RFC 6933: entPhysicalClass";
-      // not in MIB; this is identityref version of enum
+      // this is the iana-physical-class enum in the MIB
+      // combined with vendor-type
     }
 
     leaf parent-rel-pos {
@@ -517,13 +519,6 @@ EntPhysicalEntry ::= SEQUENCE {
       }
       reference "RFC 6933: entPhysicalParentRelPos";
       // read-only in MIB
-    }
-
-    leaf console-name {
-      type string;
-      reference "RFC 6933: entPhysicalName";
-      // read-only in MIB
-      // tied to console naming
     }
 
     leaf hardware-rev {
