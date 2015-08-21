@@ -1,0 +1,196 @@
+# -*- org -*-
+
+This document defines a YANG data model for the management of network
+entities.
+
+* Introduction
+** Terminology
+
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in BCP
+14, ^RFC2119^.
+
+*** Tree Diagrams
+
+A simplified graphical representation of the data model is used in
+this document.  The meaning of the symbols in these
+diagrams is as follows:
+
+- Brackets "[" and "]" enclose list keys.
+- Abbreviations before data node names: "rw" means configuration
+ data (read-write) and "ro" state data (read-only).
+- Symbols after data node names: "?" means an optional node, "!" means
+ a presence container, and "*" denotes a list and leaf-list.
+- Parentheses enclose choice and case nodes, and case nodes are also
+marked with a colon (":").
+- Ellipsis ("...") stands for contents of subtrees that are not shown.
+
+* Objectives
+
+This section describes some of the design objectives for the entity
+model.
+
+- There are many common properties used to identify the entities,
+  which need to be supported in the entity data module.
+- There are many important information and states about the
+  entities, which needs to be collected from the devices which
+  support the entity data model.
+- The entity data model SHOULD be suitable for new implementations
+  to use as is.
+- The entity data model defined in this document can be implemented
+  on a system that also implements ENTITY-MIB, thus the mapping
+  between the entity data model and ENTITY-MIB SHOULD be clear.
+
+* Entity Data Model
+
+This document defines the YANG module "ietf-entity", which has the
+following structure:
+
+ module: ietf-entity
+   +--rw physical-entities
+      +--rw last-change?       yang:date-and-time
+      +--rw physical-entity* [name]
+         +--rw name              string
+         +--rw class?            identityref
+         +--rw physical-index?   int32 {entity-mib}?
+         +--rw description?      string
+         +--rw contained-in*     -> /physical-entities
+                                      /physical-entity/name
+         +--rw contains-child*   -> /physical-entities
+                                      /physical-entity/name
+         +--rw parent-rel-pos?   int32
+         +--rw hardware-rev?     string
+         +--rw firmware-rev?     string
+         +--rw software-rev?     string
+         +--rw serial-num?       string
+         +--rw mfg-name?         string
+         +--rw model-name?       string
+         +--rw alias?            string
+         +--rw asset-id?         string
+         +--ro is-fru?           boolean
+         +--rw mfg-date?         yang:date-and-time
+         +--rw uri*              inet:uri
+         +--rw uuid?             uuid-or-zero
+         +--ro last-changed?     yang:date-and-time {entity-state}?
+         +--rw admin-state?      entity-admin-state {entity-state}?
+         +--ro oper-state?       entity-oper-state {entity-state}?
+         +--ro usage-state?      entity-usage-state {entity-state}?
+         +--ro alarm-status?     entity-alarm-status {entity-state}?
+         +--ro standby-status?   entity-standby-status {entity-state}?
+         +--ro sensor-data {entity-sensor}?
+            +--ro sensor-data-type?           entity-sensor-data-type
+            +--ro sensor-data-scale?          entity-sensor-data-scale
+            +--ro sensor-precision?           entity-sensor-precision
+            +--ro sensor-value?               entity-sensor-value
+            +--ro sensor-oper-status?         entity-sensor-status
+            +--ro sensor-units-display?       string
+            +--ro sensor-value-timestamp?     yang:date-and-time
+            +--ro sensor-value-update-rate?   uint32
+
+ notifications:
+   +---n ent-config-change
+   |
+   +---n ent-state-oper-enabled      {entity-state}?
+   |  +--ro name?           -> /physical-entities
+                                 /physical-entity/name
+   |  +--ro admin-state?    -> /physical-entities
+                                 /physical-entity/admin-state
+   |  +--ro alarm-status?   -> /physical-entities
+                                 /physical-entity/alarm-status
+   |
+   +---n ent-state-oper-disabled     {entity-state}?
+      +--ro name?           -> /physical-entities
+                                 /physical-entity/name
+      +--ro admin-state?    -> /physical-entities
+                                 /physical-entity/admin-state
+      +--ro alarm-status?   -> /physical-entities
+                                 /physical-entity/alarm-status
+
+
+* Relationship to ENTITY-MIB
+
+If the device implements the ENTITY-MIB [RFC6933], each entry in the
+/physical-entity list is typically mapped to one EntPhysicalEntry.
+The logical entities are not covered in current version of the data
+model and are for further study.
+
+The following tables list the YANG data nodes with corresponding
+objects in the ENTITY-MIB.
+
+-- YANG data nodes and related ENTITY-MIB objects
+| YANG data node in /physical-entity | ENTITY-MIB object       |
+|------------------------------------+-------------------------|
+| name                               | entPhysicalName         |
+| class                              | entPhysicalClass        |
+| physical-index                     | entPhysicalIndex        |
+| description                        | entPhysicalDescr        |
+| contained-in                       | entPhysicalContainedIn  |
+| contains-child                     | entPhysicalChildIndex   |
+| parent-rel-pos                     | entPhysicalParentRelPos |
+| hardware-rev                       | entPhysicalHardwareRev  |
+| firmware-rev                       | entPhysicalFirmwareRev  |
+| software-rev                       | entPhysicalSoftwareRev  |
+| serial-num                         | entPhysicalSerialNum    |
+| mfg-name                           | entPhysicalMfgName      |
+| model-name                         | entPhysicalModelName    |
+| alias                              | entPhysicalAlias        |
+| asset-id                           | entPhysicalAssetID      |
+| is-fru                             | entPhysicalIsFRU        |
+| mfg-date                           | entPhysicalMfgDate      |
+| uri                                | entPhysicalUris         |
+| uuid                               | entPhysicalUUID         |
+
+
+* Relationship to ENTITY-SENSOR-MIB
+
+* Relationship to ENTITY-STATE-MIB
+
+* Entity YANG Module
+
+!! include-figure ietf-entity.yang extract-to="ietf-entity@2015-08-20.yang"
+
+Move this to a separate document:
+
+!! include-figure iana-entity.yang extract-to="iana-entity@2015-08-20.yang"
+
+* IANA Considerations @iana@
+
+This document registers a URI in the IETF XML registry
+^RFC3688^. Following the format in RFC 3688, the following
+registration is requested to be made.
+
+     URI: TBD
+
+     Registrant Contact: The IESG.
+
+     XML: N/A, the requested URI is an XML namespace.
+
+This document registers a YANG module in the YANG Module Names
+registry ^RFC6020^.
+
+  name:         ietf-entity
+  namespace:    TBD
+  prefix:       ent
+  reference:    RFC XXXX
+
+* Security Considerations
+
+TBD
+
+* Acknowledgements
+
+TBD
+
+{{document:
+    name ;
+    ipr trust200902;
+    category std;
+    references entity-back.xml;
+    title "A YANG Data Model for Entity Managemet";
+    abbreviation "YANG Entity Management";
+    contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
+    contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
+    contributoe "author:Jie Dong:Huawei Technologies:jie.dong@huawei.com";
+    contributor "author:Dan Romascanu:Avaya:dromasca@avaya.com";
+}}

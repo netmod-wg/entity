@@ -1,0 +1,72 @@
+module iana-entity {
+  //namespace "urn:ietf:params:xml:ns:yang:iana-entity";
+  namespace "urn:example:iana-entity";
+  prefix ianaent;
+
+  import ietf-entity {
+    prefix ent;
+  }
+
+  description
+    "IANA defined identities for physical class.";
+  reference
+    "https://www.iana.org/assignments/ianaentity-mib/ianaentity-mib";
+
+  revision 2015-08-20 {
+    description
+      "Initial revision.";
+  }
+
+  identity other {
+    base ent:entity-physical-class;
+  }
+
+  identity chassis {
+    base ent:entity-physical-class;
+  }
+
+  identity backplane {
+    base ent:entity-physical-class;
+  }
+
+  identity container {
+    base ent:entity-physical-class;
+  }
+
+  identity power-supply {
+    base ent:entity-physical-class;
+  }
+
+  identity fan {
+    base ent:entity-physical-class;
+  }
+
+  identity sensor {
+    base ent:entity-physical-class;
+  }
+
+  identity module {
+    base ent:entity-physical-class;
+  }
+
+  identity port {
+    base ent:entity-physical-class;
+  }
+
+  identity stack {
+    base ent:entity-physical-class;
+  }
+
+  identity cpu {
+    base ent:entity-physical-class;
+  }
+
+  identity energy-object {
+    base ent:entity-physical-class;
+  }
+
+  identity battery {
+    base ent:entity-physical-class;
+  }
+
+}
