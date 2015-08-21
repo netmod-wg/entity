@@ -42,19 +42,31 @@ module ietf-entity {
      (type TimeStamp now)
 
      entConfigChange is useful but maybe covered by
-     netconf-config-change notification
+     netconf-config-change notification, or pub/sub
 
      NOT DONE:
       - need to split config and non-config into 2 sibling trees
    ***********/
 
+  //namespace "urn:ietf:params:xml:ns:yang:ietf-entity";
   namespace "urn:example:ietf-entity";
-  prefix "ent";
+  prefix ent;
 
-  import ietf-inet-types { prefix "inet"; }
-  import ietf-yang-types { prefix "yang"; }
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
 
-  revision 2015-04-13;
+  revision 2015-08-20;
+
+  feature entity-mib {
+    description
+      "This feature indicates that the device implements
+       the ENTITY-MIB.";
+    reference "RFC 6933: Entity MIB (Version 4)";
+  }
 
   feature entity-state {
     description
@@ -67,71 +79,6 @@ module ietf-entity {
       "Indicates the ENTITY-SENSOR-MIB objects are supported";
     reference "RFC 3433; Entity Sensor MIB";
   }
-
-  typedef entity-physical-index {
-    type int32 { range "1..2147483647"; }
-    description
-      "Integer index for a physical entity";
-  }
-
-  typedef entity-physical-index-or-zero {
-    type int32 { range "0..2147483647"; }
-    description
-      "Integer index for a physical entity or zero for no index";
-  }
-
-  /**** Due to be removed *********
-  typedef iana-physical-class {
-    type enumeration {
-      enum other {
-        value 1;
-      }
-      enum unknown {
-        value 2;
-      }
-      enum chassis {
-        value 3;
-      }
-      enum backplane {
-        value 4;
-      }
-      enum container {
-        value 5;
-      }
-      enum power-supply {
-        value 6;
-      }
-      enum fan {
-        value 7;
-      }
-      enum sensor {
-        value 8;
-      }
-      enum module {
-        value 9;
-      }
-      enum port {
-        value 10;
-      }
-      enum stack {
-        value 11;
-      }
-      enum cpu {
-        value 12;
-      }
-      enum energy-object {
-        value 13;
-      }
-      enum battery {
-        value 14;
-      }
-    }
-    description "IANA defined enumerations for physical class";
-    reference
-      "https://www.iana.org/assignments/ianaentity-mib/ianaentity-mib";
-  }
-  *********************/
-
 
   typedef uuid-or-zero {
     type union {
@@ -368,61 +315,7 @@ module ietf-entity {
   }
 
 
-  identity entity-vendor-type;
-
   identity entity-physical-class;
-
-  identity other {
-    base entity-physical-class;
-  }
-
-  identity chassis {
-    base entity-physical-class;
-  }
-
-  identity backplane {
-    base entity-physical-class;
-  }
-
-  identity container {
-    base entity-physical-class;
-  }
-
-  identity power-supply {
-    base entity-physical-class;
-  }
-
-  identity fan {
-    base entity-physical-class;
-  }
-
-  identity sensor {
-    base entity-physical-class;
-  }
-
-  identity module {
-    base entity-physical-class;
-  }
-
-  identity port {
-    base entity-physical-class;
-  }
-
-  identity stack {
-    base entity-physical-class;
-  }
-
-  identity cpu {
-    base entity-physical-class;
-  }
-
-  identity energy-object {
-    base entity-physical-class;
-  }
-
-  identity battery {
-    base entity-physical-class;
-  }
 
 
 /*
@@ -450,283 +343,276 @@ EntPhysicalEntry ::= SEQUENCE {
 */
 
 
-  list physical-entity {
-    key name;
-    description "List of physical entities";
-    reference "RFC 6933: entPhysicalEntry";
-
-    leaf name {
-      type string;
-      description
-        "Administrative name assigned to this physical entity.
-         No restrictions apply. Not required to be the same
-         as entPhysicalName. This is the console name in the
-         MIB module";
-      // read-only column in MIB
-    }
-
-    leaf physical-index {
-      type entity-physical-index;
-      description
-        "Integer index for backward compatibility";
-      reference "RFC 6933: entPhysicalIndex";
-      // not-accessible INDEX in MIB
-    }
-
-    leaf description {
-      type string;
-      reference "RFC 6933: entPhysicalDescr";
-      // read-only in MIB
-    }
-
-    /*************** due to be removed *****************
-    leaf vendor-type {
-      type identityref { base entity-vendor-type; }
-      reference "RFC 6933: entPhysicalVendorType";
-      // read-only in MIB
-    }
-    *****************************************/
-
-
-    leaf-list contained-in {
-      type entity-physical-index-or-zero;
-      reference "RFC 6933: entPhysicalContainedIn";
-      // read-only in MIB
-      // should this be 'name' string instead of integer?
-      // only a leaf in MIB
-    }
-
-    leaf-list contains-child {
-      type entity-physical-index-or-zero;
-      reference "RFC 6933: entPhysicalChildIndex";
-      // read-only INDEX in MIB
-      // should this be 'name' string instead of integer?
-      // multiple entPhysicalContainsEntry instances in MIB
-    }
-
-    leaf class {
-      type identityref {
-        base entity-physical-class;
-      }
-      reference "RFC 6933: entPhysicalClass";
-      // this is the iana-physical-class enum in the MIB
-      // combined with vendor-type
-    }
-
-    leaf parent-rel-pos {
-      type int32 {
-        range "-1 .. 2147483647";
-      }
-      reference "RFC 6933: entPhysicalParentRelPos";
-      // read-only in MIB
-    }
-
-    leaf hardware-rev {
-      type string;
-      reference "RFC 6933: entPhysicalHardwareRev";
-      // read-only in MIB
-    }
-
-    leaf firmware-rev {
-      type string;
-      reference "RFC 6933: entPhysicalFirmwareRev";
-      // read-only in MIB
-    }
-
-    leaf software-rev {
-      type string;
-      reference "RFC 6933: entPhysicalSoftwareRev";
-      // read-only in MIB
-    }
-
-    leaf serial-num {
-      type string;
-      reference "RFC 6933: entPhysicalSerialNum";
-      // read-write in MIB
-      // write access not required if NV-storage not provided
-    }
-
-    leaf mfg-name {
-      type string;
-      reference "RFC 6933: entPhysicalMfgName";
-      // read-only in MIB
-    }
-
-    leaf model-name {
-      type string;
-      reference "RFC 6933: entPhysicalModelName";
-      // read-only in MIB
-    }
-
-    leaf alias {
-      type string {
-        length "0 .. 32";
-      }
-      reference "RFC 6933: entPhysicalAlias";
-      // read-write in MIB
-      // agent must retain the value set
-    }
-
-    leaf asset-id {
-      type string {
-        length "0 .. 32";
-      }
-      reference "RFC 6933: entPhysicalAssetID";
-      // read-write in MIB
-      // agent must retain the value set but not required
-      // if is-fru is false
-    }
-
-    leaf is-fru {
-      type boolean;
-      reference "RFC 6933: entPhysicalIsFRU";
-      config false;
-      // read-only in MIB
-      // TruthValue is SYNTAX INTEGER { true(1), false(2) }
-    }
-
-    leaf mfg-date {
+  container physical-entities {
+    leaf last-change {
       type yang:date-and-time;
-      reference "RFC 6933: entPhysicalMfgDate";
-      // read-only in MIB
-      // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
-    }
-
-    leaf-list uri {
-      type inet:uri;
       description
-        "Each URI is in a separate leaf-list instance instead
-         of a white-space delimited string of URIs";
-      reference "RFC 6933: entPhysicalUris";
-      // read-write in MIB (SYNTAX OCTET STRING)
+        "The time the 'physical-entity' list changed.";
     }
 
-    leaf uuid {
-      type uuid-or-zero;
-      reference "RFC 6933: entPhysicalUUID";
-      // read-only in MIB
-      // SYNTAX OCTET STRING (SIZE (0|16))
-    }
+    list physical-entity {
+      key name;
+      description
+        "List of physical entities";
+      reference "RFC 6933: entPhysicalEntry";
 
-    leaf last-changed {
-      if-feature entity-state;
-      config false;
-      type yang:date-and-time;
-      reference "RFC 4268, entStateLastChanged";
-      // read-only in MIB
-      // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
-    }
+      leaf name {
+        type string;
+        description
+          "Administrative name assigned to this physical entity.
+           No restrictions apply. Not required to be the same
+           as entPhysicalName. This is the console name in the
+           MIB module";
+        // read-only column in MIB
+      }
 
-    leaf admin-state {
-      if-feature entity-state;
-      type entity-admin-state;
-      reference "RFC 4268, entStateAdmin";
-      // read-write in MIB
-    }
+      leaf class {
+        type identityref {
+          base entity-physical-class;
+        }
+        reference "RFC 6933: entPhysicalClass";
+        // this is the iana-physical-class enum in the MIB
+        // combined with vendor-type
+        // The idea is that vendors can "subclass" any of the
+        // IANA-defined values, derive directly from
+        // entity-physical-class.
+      }
 
-    leaf oper-state {
-      if-feature entity-state;
-      type entity-oper-state;
-      config false;
-      reference "RFC 4268, entStateOper";
-      // read-only in MIB
-    }
+      leaf physical-index {
+        if-feature entity-mib;
+        type int32 {
+          range "1..2147483647";
+        }
+        description
+          "The entPhysicalIndex for the entPhysicalEntry represented
+           by this list entry.";
+        reference "RFC 6933: entPhysicalIndex";
+      }
 
-    leaf usage-state {
-      if-feature entity-state;
-      type entity-usage-state;
-      config false;
-      reference "RFC 4268, entStateUsage";
-      // read-only in MIB
-    }
+      leaf description {
+        type string;
+        reference "RFC 6933: entPhysicalDescr";
+        // read-only in MIB
+      }
 
-    leaf alarm-status {
-      if-feature entity-state;
-      type entity-alarm-status;
-      config false;
-      reference "RFC 4268, entStateAlarm";
-      // read-only in MIB
-    }
+      leaf-list contained-in {
+        type leafref {
+          path "/physical-entities/physical-entity/name";
+        }
+        reference "RFC 6933: entPhysicalContainedIn";
+        // read-only in MIB
+        // only a leaf in MIB
+      }
 
-    leaf standby-status {
-      if-feature entity-state;
-      type entity-standby-status;
-      config false;
-      reference "RFC 4268, entStateStandby";
-      // read-only in MIB
-    }
+      leaf-list contains-child {
+        type leafref {
+          path "/physical-entities/physical-entity/name";
+        }
+        reference "RFC 6933: entPhysicalChildIndex";
+        // read-only INDEX in MIB
+        // should this be 'name' string instead of integer?
+        // multiple entPhysicalContainsEntry instances in MIB
+      }
 
-    leaf sensor-data-type {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type entity-sensor-data-type;
-      config false;
-      reference "RFC 3433, entPhySensorType";
-      // read-only in MIB
-    }
+      leaf parent-rel-pos {
+        type int32 {
+          range "-1 .. 2147483647";
+        }
+        reference "RFC 6933: entPhysicalParentRelPos";
+        // read-only in MIB
+      }
 
-    leaf sensor-data-scale {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type entity-sensor-data-scale;
-      config false;
-      reference "RFC 3433, entPhySensorScale";
-      // read-only in MIB
-    }
+      leaf hardware-rev {
+        type string;
+        reference "RFC 6933: entPhysicalHardwareRev";
+        // read-only in MIB
+      }
 
-    leaf sensor-precision {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type entity-sensor-precision;
-      config false;
-      reference "RFC 3433, entPhySensorScale";
-      // read-only in MIB
-    }
+      leaf firmware-rev {
+        type string;
+        reference "RFC 6933: entPhysicalFirmwareRev";
+        // read-only in MIB
+      }
 
-    leaf sensor-value {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type entity-sensor-value;
-      config false;
-      reference "RFC 3433, entPhySensorScale";
-      // read-only in MIB
-    }
+      leaf software-rev {
+        type string;
+        reference "RFC 6933: entPhysicalSoftwareRev";
+        // read-only in MIB
+      }
 
-    leaf sensor-oper-status {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type entity-sensor-status;
-      config false;
-      reference "RFC 3433, entPhySensorOperStatus";
-      // read-only in MIB
-    }
+      leaf serial-num {
+        type string;
+        reference "RFC 6933: entPhysicalSerialNum";
+        // read-write in MIB
+        // write access not required if NV-storage not provided
+      }
 
-    leaf sensor-units-display {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type string;
-      config false;
-      reference "RFC 3433, entPhySensorUnitsDisplay";
-      // read-only in MIB
-    }
+      leaf mfg-name {
+        type string;
+        reference "RFC 6933: entPhysicalMfgName";
+        // read-only in MIB
+      }
 
-    leaf sensor-value-timestamp {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type yang:date-and-time;
-      config false;
-      reference "RFC 3433, entPhySensorValueTimeStamp";
-      // read-only in MIB
-    }
+      leaf model-name {
+        type string;
+        reference "RFC 6933: entPhysicalModelName";
+        // read-only in MIB
+      }
 
-    leaf sensor-value-update-rate {
-      if-feature entity-sensor;
-      when "../class = 'sensor'";
-      type uint32;
-      units "milliseconds";
-      config false;
-      reference "RFC 3433, entPhySensorValueUpdateRate";
-      // read-only in MIB
+      leaf alias {
+        type string {
+          length "0 .. 32";
+        }
+        reference "RFC 6933: entPhysicalAlias";
+        // read-write in MIB
+        // agent must retain the value set
+      }
+
+      leaf asset-id {
+        type string {
+          length "0 .. 32";
+        }
+        reference "RFC 6933: entPhysicalAssetID";
+        // read-write in MIB
+        // agent must retain the value set but not required
+        // if is-fru is false
+      }
+
+      leaf is-fru {
+        type boolean;
+        reference "RFC 6933: entPhysicalIsFRU";
+        config false;
+        // read-only in MIB
+        // TruthValue is SYNTAX INTEGER { true(1), false(2) }
+      }
+
+      leaf mfg-date {
+        type yang:date-and-time;
+        reference "RFC 6933: entPhysicalMfgDate";
+        // read-only in MIB
+        // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
+      }
+
+      leaf-list uri {
+        type inet:uri;
+        description
+          "Each URI is in a separate leaf-list instance instead
+           of a white-space delimited string of URIs";
+        reference "RFC 6933: entPhysicalUris";
+        // read-write in MIB (SYNTAX OCTET STRING)
+      }
+
+      leaf uuid {
+        type uuid-or-zero;
+        reference "RFC 6933: entPhysicalUUID";
+        // read-only in MIB
+        // SYNTAX OCTET STRING (SIZE (0|16))
+      }
+
+      leaf last-changed {
+        if-feature entity-state;
+        config false;
+        type yang:date-and-time;
+        reference "RFC 4268, entStateLastChanged";
+        // read-only in MIB
+        // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
+      }
+
+      leaf admin-state {
+        if-feature entity-state;
+        type entity-admin-state;
+        reference "RFC 4268, entStateAdmin";
+        // read-write in MIB
+      }
+
+      leaf oper-state {
+        if-feature entity-state;
+        type entity-oper-state;
+        config false;
+        reference "RFC 4268, entStateOper";
+        // read-only in MIB
+      }
+
+      leaf usage-state {
+        if-feature entity-state;
+        type entity-usage-state;
+        config false;
+        reference "RFC 4268, entStateUsage";
+        // read-only in MIB
+      }
+
+      leaf alarm-status {
+        if-feature entity-state;
+        type entity-alarm-status;
+        config false;
+        reference "RFC 4268, entStateAlarm";
+        // read-only in MIB
+      }
+
+      leaf standby-status {
+        if-feature entity-state;
+        type entity-standby-status;
+        config false;
+        reference "RFC 4268, entStateStandby";
+        // read-only in MIB
+      }
+
+      container sensor-data {
+        if-feature entity-sensor;
+        // interesting recursive dependency...
+        // when 'derived-from(../class, "iana-entity", "sensor")';
+        config false;
+
+        leaf sensor-data-type {
+          type entity-sensor-data-type;
+          reference "RFC 3433, entPhySensorType";
+          // read-only in MIB
+        }
+
+        leaf sensor-data-scale {
+          type entity-sensor-data-scale;
+          reference "RFC 3433, entPhySensorScale";
+          // read-only in MIB
+        }
+
+        leaf sensor-precision {
+          type entity-sensor-precision;
+          reference "RFC 3433, entPhySensorScale";
+          // read-only in MIB
+        }
+
+        leaf sensor-value {
+          type entity-sensor-value;
+          reference "RFC 3433, entPhySensorScale";
+          // read-only in MIB
+        }
+
+        leaf sensor-oper-status {
+          type entity-sensor-status;
+          reference "RFC 3433, entPhySensorOperStatus";
+          // read-only in MIB
+        }
+
+        leaf sensor-units-display {
+          type string;
+          reference "RFC 3433, entPhySensorUnitsDisplay";
+          // read-only in MIB
+        }
+
+        leaf sensor-value-timestamp {
+          type yang:date-and-time;
+          reference "RFC 3433, entPhySensorValueTimeStamp";
+          // read-only in MIB
+        }
+
+        leaf sensor-value-update-rate {
+          type uint32;
+          units "milliseconds";
+          reference "RFC 3433, entPhySensorValueUpdateRate";
+          // read-only in MIB
+        }
+      }
+
     }
 
   }
@@ -739,17 +625,19 @@ EntPhysicalEntry ::= SEQUENCE {
     if-feature entity-state;
     leaf name {
       type leafref {
-        path "/ent:physical-entity/ent:name";
+        path "/ent:physical-entities/ent:physical-entity/ent:name";
       }
     }
     leaf admin-state {
       type leafref {
-        path "/ent:physical-entity/ent:admin-state";
+        path "/ent:physical-entities/ent:physical-entity"
+           + "/ent:admin-state";
       }
     }
     leaf alarm-status {
       type leafref {
-        path "/ent:physical-entity/ent:alarm-status";
+        path "/ent:physical-entities/ent:physical-entity"
+           + "/ent:alarm-status";
       }
     }
     reference "RFC 4268, entStateOperEnabled";
@@ -759,21 +647,22 @@ EntPhysicalEntry ::= SEQUENCE {
     if-feature entity-state;
     leaf name {
       type leafref {
-        path "/ent:physical-entity/ent:name";
+        path "/ent:physical-entities/ent:physical-entity/ent:name";
       }
     }
     leaf admin-state {
       type leafref {
-        path "/ent:physical-entity/ent:admin-state";
+        path "/ent:physical-entities/ent:physical-entity"
+           + "/ent:admin-state";
       }
     }
     leaf alarm-status {
       type leafref {
-        path "/ent:physical-entity/ent:alarm-status";
+        path "/ent:physical-entities/ent:physical-entity"
+           + "/ent:alarm-status";
       }
     }
     reference "RFC 4268, entStateOperDisabled";
   }
-
 
 }

@@ -17,6 +17,7 @@ module iana-entity {
       "Initial revision.";
   }
 
+  // FIXME: remove 'other'?
   identity other {
     base ent:entity-physical-class;
   }
