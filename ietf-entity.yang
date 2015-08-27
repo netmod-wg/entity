@@ -503,12 +503,11 @@ module ietf-entity {
         // SYNTAX OCTET STRING (SIZE (0|16))
       }
 
-      leaf last-changed {
+      leaf state-last-changed {
         if-feature entity-state;
         type yang:date-and-time;
         reference "RFC 4268, entStateLastChanged";
         // read-only in MIB
-        // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
       }
 
       leaf admin-state {
@@ -646,6 +645,14 @@ module ietf-entity {
         type inet:uri;
         reference "RFC 6933: entPhysicalUris";
       }
+
+      leaf admin-state {
+        if-feature entity-state;
+        type entity-admin-state;
+        reference "RFC 4268, entStateAdmin";
+        // read-write in MIB
+      }
+
     }
   }
 
