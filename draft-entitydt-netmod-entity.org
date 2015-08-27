@@ -47,100 +47,133 @@ model.
 This document defines the YANG module "ietf-entity", which has the
 following structure:
 
- module: ietf-entity
-   +--rw physical-entities
-      +--rw last-change?       yang:date-and-time
-      +--rw physical-entity* [name]
-         +--rw name              string
-         +--rw class?            identityref
-         +--rw physical-index?   int32 {entity-mib}?
-         +--rw description?      string
-         +--rw contained-in*     -> /physical-entities
-                                      /physical-entity/name
-         +--rw contains-child*   -> /physical-entities
-                                      /physical-entity/name
-         +--rw parent-rel-pos?   int32
-         +--rw hardware-rev?     string
-         +--rw firmware-rev?     string
-         +--rw software-rev?     string
-         +--rw serial-num?       string
-         +--rw mfg-name?         string
-         +--rw model-name?       string
-         +--rw alias?            string
-         +--rw asset-id?         string
-         +--ro is-fru?           boolean
-         +--rw mfg-date?         yang:date-and-time
-         +--rw uri*              inet:uri
-         +--rw uuid?             uuid-or-zero
-         +--ro last-changed?     yang:date-and-time {entity-state}?
-         +--rw admin-state?      entity-admin-state {entity-state}?
-         +--ro oper-state?       entity-oper-state {entity-state}?
-         +--ro usage-state?      entity-usage-state {entity-state}?
-         +--ro alarm-status?     entity-alarm-status {entity-state}?
-         +--ro standby-status?   entity-standby-status {entity-state}?
-         +--ro sensor-data {entity-sensor}?
-            +--ro sensor-data-type?           entity-sensor-data-type
-            +--ro sensor-data-scale?          entity-sensor-data-scale
-            +--ro sensor-precision?           entity-sensor-precision
-            +--ro sensor-value?               entity-sensor-value
-            +--ro sensor-oper-status?         entity-sensor-status
-            +--ro sensor-units-display?       string
-            +--ro sensor-value-timestamp?     yang:date-and-time
-            +--ro sensor-value-update-rate?   uint32
+  module: ietf-entity
+     +--ro entity-state
+     |  +--ro last-change?       yang:date-and-time
+     |  +--ro physical-entity* [name]
+     |     +--ro name            string
+     |     +--ro class?          identityref
+     |     +--ro physical-index? int32 {entity-mib}?
+     |     +--ro description?    string
+     |     +--ro contained-in*   -> ../../physical-entity/name
+     |     +--ro contains-child* -> ../../physical-entity/name
+     |     +--ro parent-rel-pos? int32
+     |     +--ro hardware-rev?   string
+     |     +--ro firmware-rev?   string
+     |     +--ro software-rev?   string
+     |     +--ro serial-num?     string
+     |     +--ro mfg-name?       string
+     |     +--ro model-name?     string
+     |     +--ro alias?          string
+     |     +--ro asset-id?       string
+     |     +--ro is-fru?         boolean
+     |     +--ro mfg-date?       yang:date-and-time
+     |     +--ro uri*            inet:uri
+     |     +--ro uuid?           yang:uuid
+     |     +--ro last-changed?   yang:date-and-time {entity-state}?
+     |     +--ro admin-state?    entity-admin-state {entity-state}?
+     |     +--ro oper-state?     entity-oper-state {entity-state}?
+     |     +--ro usage-state?    entity-usage-state {entity-state}?
+     |     +--ro alarm-status?   entity-alarm-status {entity-state}?
+     |     +--ro standby-status? entity-standby-status {entity-state}?
+     |     +--ro sensor-data {entity-sensor}?
+     |        +--ro data-type?              entity-sensor-data-type
+     |        +--ro data-scale?             entity-sensor-data-scale
+     |        +--ro precision?              entity-sensor-precision
+     |        +--ro value?                  entity-sensor-value
+     |        +--ro oper-status?            entity-sensor-status
+     |        +--ro sensor-units-display?   string
+     |        +--ro value-timestamp?        yang:date-and-time
+     |        +--ro value-update-rate?      uint32
+     +--rw entity {entity-config}?
+        +--rw physical-entity* [name]
+           +--rw name          string
+           +--rw serial-num?   string
+           +--rw alias?        string
+           +--rw asset-id?     string
+           +--rw uri*          inet:uri
 
- notifications:
-   +---n ent-config-change
-   |
-   +---n ent-state-oper-enabled      {entity-state}?
-   |  +--ro name?           -> /physical-entities
-                                 /physical-entity/name
-   |  +--ro admin-state?    -> /physical-entities
-                                 /physical-entity/admin-state
-   |  +--ro alarm-status?   -> /physical-entities
-                                 /physical-entity/alarm-status
-   |
-   +---n ent-state-oper-disabled     {entity-state}?
-      +--ro name?           -> /physical-entities
-                                 /physical-entity/name
-      +--ro admin-state?    -> /physical-entities
-                                 /physical-entity/admin-state
-      +--ro alarm-status?   -> /physical-entities
-                                 /physical-entity/alarm-status
+  notifications:
+     +---n ent-config-change
+     +---n ent-state-oper-enabled      {entity-state}?
+     |  +--ro name?           -> /entity-state/physical-entity
+                                 /name
+     |  +--ro admin-state?    -> /entity-state/physical-entity
+                                 /admin-state
+     |  +--ro alarm-status?   -> /entity-state/physical-entity
+                                 /alarm-status
+     +---n ent-state-oper-disabled     {entity-state}?
+        +--ro name?           -> /entity-state/physical-entity
+                                 /name
+        +--ro admin-state?    -> /entity-state/physical-entity
+                                 /admin-state
+        +--ro alarm-status?   -> /entity-state/physical-entity
+                                 /alarm-status
 
+** The Physical Entry Lists
+
+The data model for physical entities presented in this document uses a
+flat list of entities.  Each entity in the list is identified by its
+name.  Furthermore, each entity has a mandatory "class" leaf.
+
+The "iana-entity" module defines YANG identities for the
+hardware types in the IANA-maintained "IANA-ENTITY-MIB" registry.
+
+There is one optional list of configured physical entities
+("/entity/physical-entity"), and a separate list for the operational
+state of all physical entities ("/entity-state/physical-entity").
+
+The "class" leaf is a YANG identity that describes the type of the
+hardware.  Vendors are encouraged to either directly use one of the
+common IANA-defined identities, or derive a more specific identity
+from one of them.
 
 * Relationship to ENTITY-MIB
 
-If the device implements the ENTITY-MIB [RFC6933], each entry in the
-/physical-entity list is typically mapped to one EntPhysicalEntry.
-The logical entities are not covered in current version of the data
-model and are for further study.
+If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
+/entity-state/physical-entity list is typically mapped to one
+EntPhysicalEntry.  Objects that are writable in the MIB are mapped to
+nodes in the /entity/physical-entity list.
+
+The "physical-index" leaf MUST contain the value of the corresponding
+entPhysicalEntry's entPhysicalIndex.
+
+The "class" leaf is mapped to both entPhysicalClass and
+entPhysicalVendorType.  If the value of the "class" leaf is an
+identity that is either derived from or is one of the identites in the
+"iana-entity" module, then entPhysicalClass contains the corresponding
+IANAPhysicalClass enumeration value.  Otherwise, entPhysicalClass
+contains the IANAPhysicalClass value "other(1)".  Vendors are
+encouraged to define an identity (derived from an identity in
+"iana-entity" if possible) for each enterprise-specific registration
+identifier used for entPhysicalVendorType, and use that identity for
+the "class" leaf.
 
 The following tables list the YANG data nodes with corresponding
 objects in the ENTITY-MIB.
 
 -- YANG data nodes and related ENTITY-MIB objects
-| YANG data node in /physical-entity | ENTITY-MIB object       |
-|------------------------------------+-------------------------|
-| name                               | entPhysicalName         |
-| class                              | entPhysicalClass        |
-| physical-index                     | entPhysicalIndex        |
-| description                        | entPhysicalDescr        |
-| contained-in                       | entPhysicalContainedIn  |
-| contains-child                     | entPhysicalChildIndex   |
-| parent-rel-pos                     | entPhysicalParentRelPos |
-| hardware-rev                       | entPhysicalHardwareRev  |
-| firmware-rev                       | entPhysicalFirmwareRev  |
-| software-rev                       | entPhysicalSoftwareRev  |
-| serial-num                         | entPhysicalSerialNum    |
-| mfg-name                           | entPhysicalMfgName      |
-| model-name                         | entPhysicalModelName    |
-| alias                              | entPhysicalAlias        |
-| asset-id                           | entPhysicalAssetID      |
-| is-fru                             | entPhysicalIsFRU        |
-| mfg-date                           | entPhysicalMfgDate      |
-| uri                                | entPhysicalUris         |
-| uuid                               | entPhysicalUUID         |
-
+| YANG data node in /entity-state/physical-entity | ENTITY-MIB object                      |
+|-------------------------------------------------+----------------------------------------|
+| name                                            | entPhysicalName                        |
+| class                                           | entPhysicalClass entPhysicalVendorType |
+| physical-index                                  | entPhysicalIndex                       |
+| description                                     | entPhysicalDescr                       |
+| contained-in                                    | entPhysicalContainedIn                 |
+| contains-child                                  | entPhysicalChildIndex                  |
+| parent-rel-pos                                  | entPhysicalParentRelPos                |
+| hardware-rev                                    | entPhysicalHardwareRev                 |
+| firmware-rev                                    | entPhysicalFirmwareRev                 |
+| software-rev                                    | entPhysicalSoftwareRev                 |
+| serial-num                                      | entPhysicalSerialNum                   |
+| mfg-name                                        | entPhysicalMfgName                     |
+| model-name                                      | entPhysicalModelName                   |
+| alias                                           | entPhysicalAlias                       |
+| asset-id                                        | entPhysicalAssetID                     |
+| is-fru                                          | entPhysicalIsFRU                       |
+| mfg-date                                        | entPhysicalMfgDate                     |
+| uri                                             | entPhysicalUris                        |
+| uuid                                            | entPhysicalUUID                        |
 
 * Relationship to ENTITY-SENSOR-MIB
 

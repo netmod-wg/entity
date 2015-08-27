@@ -5,7 +5,7 @@ module ietf-entity {
      allow NMS to populate config
      server will use config to populate operational with configed
      values and then populate the rest of operational from
-     its internal code
+     its internal code - done.
 
      will oper be a superset of config? yes
 
@@ -25,29 +25,33 @@ module ietf-entity {
      populate the config and oper used
 
      entity-state-mib adds 4 leafs that could be folded in
-     use if-feature to make it optional
+     use if-feature to make it optional - done.
 
-     same consensus for entity-sensor-mib
+     same consensus for entity-sensor-mib - done.
 
      need entPhysicalContainsMapping for reverse containment
-     but this can be in the main table
+     but this can be in the main table - done.
 
      do not need entLogicalTable -- SNMP only so this is not
      needed in the YANG version
 
-     contained-in and contained-by should be leaf-lists
+     contained-in and contained-by should be leaf-lists - done.
 
      entLastChangeTime is a timestamp
      do we need it to be date-and-time
-     (type TimeStamp now)
+     (type TimeStamp now) - done; date-and-time.
 
      entConfigChange is useful but maybe covered by
-     netconf-config-change notification, or pub/sub
+     netconf-config-change notification, or pub/sub. it is also a bad
+     name, since it fires when the opstate changes...
+     Issue: need to think about which notifs to define.
 
-     NOT DONE:
-      - need to split config and non-config into 2 sibling trees
+     entPhySensorOperStatus compared with entStateOper- overlap?
+
+
    ***********/
 
+  yang-version 1.1;
   //namespace "urn:ietf:params:xml:ns:yang:ietf-entity";
   namespace "urn:example:ietf-entity";
   prefix ent;
@@ -59,13 +63,26 @@ module ietf-entity {
     prefix yang;
   }
 
-  revision 2015-08-20;
+  revision 2015-08-27 {
+    description
+      "Initial revision.";
+  }
+
+  /*
+   * Features
+   */
 
   feature entity-mib {
     description
       "This feature indicates that the device implements
        the ENTITY-MIB.";
     reference "RFC 6933: Entity MIB (Version 4)";
+  }
+
+  feature entity-config {
+    description
+      "Indicates that the device supports configuration of
+       physical entities.";
   }
 
   feature entity-state {
@@ -80,12 +97,9 @@ module ietf-entity {
     reference "RFC 3433; Entity Sensor MIB";
   }
 
-  typedef uuid-or-zero {
-    type union {
-      type yang:uuid;
-      type string { length "0"; }
-    }
-  }
+  /*
+   * Typedefs
+   */
 
   typedef entity-admin-state {
     type enumeration {
@@ -314,40 +328,23 @@ module ietf-entity {
     reference "RFC 3433, EntitySensorStatus";
   }
 
+  /*
+   * Identities
+   */
 
   identity entity-physical-class;
 
+  /*
+   * Operational state data nodes
+   */
 
-/*
-EntPhysicalEntry ::= SEQUENCE {
-      entPhysicalIndex          PhysicalIndex,
-      entPhysicalDescr          SnmpAdminString,
-      entPhysicalVendorType     AutonomousType,
-      entPhysicalContainedIn    PhysicalIndexOrZero,
-      entPhysicalClass          IANAPhysicalClass,
-      entPhysicalParentRelPos   Integer32,
-      entPhysicalName           SnmpAdminString,
-      entPhysicalHardwareRev    SnmpAdminString,
-      entPhysicalFirmwareRev    SnmpAdminString,
-      entPhysicalSoftwareRev    SnmpAdminString,
-      entPhysicalSerialNum      SnmpAdminString,
-      entPhysicalMfgName        SnmpAdminString,
-      entPhysicalModelName      SnmpAdminString,
-      entPhysicalAlias          SnmpAdminString,
-      entPhysicalAssetID        SnmpAdminString,
-      entPhysicalIsFRU          TruthValue,
-      entPhysicalMfgDate        DateAndTime,
-      entPhysicalUris           OCTET STRING,
-      entPhysicalUUID           UUIDorZero
-}
-*/
+  container entity-state {
+    config false;
 
-
-  container physical-entities {
     leaf last-change {
       type yang:date-and-time;
       description
-        "The time the 'physical-entity' list changed.";
+        "The time the '/entity-state/physical-entity' list changed.";
     }
 
     list physical-entity {
@@ -361,9 +358,7 @@ EntPhysicalEntry ::= SEQUENCE {
         description
           "Administrative name assigned to this physical entity.
            No restrictions apply. Not required to be the same
-           as entPhysicalName. This is the console name in the
-           MIB module";
-        // read-only column in MIB
+           as entPhysicalName.";
       }
 
       leaf class {
@@ -397,7 +392,7 @@ EntPhysicalEntry ::= SEQUENCE {
 
       leaf-list contained-in {
         type leafref {
-          path "/physical-entities/physical-entity/name";
+          path "../../physical-entity/name";
         }
         reference "RFC 6933: entPhysicalContainedIn";
         // read-only in MIB
@@ -406,7 +401,7 @@ EntPhysicalEntry ::= SEQUENCE {
 
       leaf-list contains-child {
         type leafref {
-          path "/physical-entities/physical-entity/name";
+          path "../../physical-entity/name";
         }
         reference "RFC 6933: entPhysicalChildIndex";
         // read-only INDEX in MIB
@@ -416,7 +411,7 @@ EntPhysicalEntry ::= SEQUENCE {
 
       leaf parent-rel-pos {
         type int32 {
-          range "-1 .. 2147483647";
+          range "0 .. 2147483647";
         }
         reference "RFC 6933: entPhysicalParentRelPos";
         // read-only in MIB
@@ -481,7 +476,6 @@ EntPhysicalEntry ::= SEQUENCE {
       leaf is-fru {
         type boolean;
         reference "RFC 6933: entPhysicalIsFRU";
-        config false;
         // read-only in MIB
         // TruthValue is SYNTAX INTEGER { true(1), false(2) }
       }
@@ -503,7 +497,7 @@ EntPhysicalEntry ::= SEQUENCE {
       }
 
       leaf uuid {
-        type uuid-or-zero;
+        type yang:uuid;
         reference "RFC 6933: entPhysicalUUID";
         // read-only in MIB
         // SYNTAX OCTET STRING (SIZE (0|16))
@@ -511,7 +505,6 @@ EntPhysicalEntry ::= SEQUENCE {
 
       leaf last-changed {
         if-feature entity-state;
-        config false;
         type yang:date-and-time;
         reference "RFC 4268, entStateLastChanged";
         // read-only in MIB
@@ -558,36 +551,34 @@ EntPhysicalEntry ::= SEQUENCE {
       }
 
       container sensor-data {
+        when 'derived-from(../class, "iana-entity", "sensor")';
         if-feature entity-sensor;
-        // interesting recursive dependency...
-        // when 'derived-from(../class, "iana-entity", "sensor")';
-        config false;
 
-        leaf sensor-data-type {
+        leaf data-type {
           type entity-sensor-data-type;
           reference "RFC 3433, entPhySensorType";
           // read-only in MIB
         }
 
-        leaf sensor-data-scale {
+        leaf data-scale {
           type entity-sensor-data-scale;
           reference "RFC 3433, entPhySensorScale";
           // read-only in MIB
         }
 
-        leaf sensor-precision {
+        leaf precision {
           type entity-sensor-precision;
           reference "RFC 3433, entPhySensorScale";
           // read-only in MIB
         }
 
-        leaf sensor-value {
+        leaf value {
           type entity-sensor-value;
           reference "RFC 3433, entPhySensorScale";
           // read-only in MIB
         }
 
-        leaf sensor-oper-status {
+        leaf oper-status {
           type entity-sensor-status;
           reference "RFC 3433, entPhySensorOperStatus";
           // read-only in MIB
@@ -599,13 +590,13 @@ EntPhysicalEntry ::= SEQUENCE {
           // read-only in MIB
         }
 
-        leaf sensor-value-timestamp {
+        leaf value-timestamp {
           type yang:date-and-time;
           reference "RFC 3433, entPhySensorValueTimeStamp";
           // read-only in MIB
         }
 
-        leaf sensor-value-update-rate {
+        leaf value-update-rate {
           type uint32;
           units "milliseconds";
           reference "RFC 3433, entPhySensorValueUpdateRate";
@@ -614,8 +605,53 @@ EntPhysicalEntry ::= SEQUENCE {
       }
 
     }
-
   }
+
+  /*
+   * Configuration data nodes
+   */
+
+  container entity {
+    if-feature entity-config;
+
+    list physical-entity {
+      key name;
+      description
+        "List of configurated data for physical entities.";
+
+      leaf name {
+        type string;
+      }
+
+      leaf serial-num {
+        type string;
+        reference "RFC 6933: entPhysicalSerialNum";
+      }
+
+      leaf alias {
+        type string {
+          length "0 .. 32";
+        }
+        reference "RFC 6933: entPhysicalAlias";
+      }
+
+      leaf asset-id {
+        type string {
+          length "0 .. 32";
+        }
+        reference "RFC 6933: entPhysicalAssetID";
+      }
+
+      leaf-list uri {
+        type inet:uri;
+        reference "RFC 6933: entPhysicalUris";
+      }
+    }
+  }
+
+  /*
+   * Notifications
+   */
 
   notification ent-config-change {
     reference "RFC 6933, entConfigChange";
@@ -625,19 +661,17 @@ EntPhysicalEntry ::= SEQUENCE {
     if-feature entity-state;
     leaf name {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity/ent:name";
+        path "/entity-state/physical-entity/name";
       }
     }
     leaf admin-state {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity"
-           + "/ent:admin-state";
+        path "/entity-state/physical-entity/admin-state";
       }
     }
     leaf alarm-status {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity"
-           + "/ent:alarm-status";
+        path "/entity-state/physical-entity/alarm-status";
       }
     }
     reference "RFC 4268, entStateOperEnabled";
@@ -647,19 +681,17 @@ EntPhysicalEntry ::= SEQUENCE {
     if-feature entity-state;
     leaf name {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity/ent:name";
+        path "/entity-state/physical-entity/name";
       }
     }
     leaf admin-state {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity"
-           + "/ent:admin-state";
+        path "/entity-state/physical-entity/admin-state";
       }
     }
     leaf alarm-status {
       type leafref {
-        path "/ent:physical-entities/ent:physical-entity"
-           + "/ent:alarm-status";
+        path "/entity-state/physical-entity/alarm-status";
       }
     }
     reference "RFC 4268, entStateOperDisabled";
