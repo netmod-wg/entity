@@ -105,17 +105,29 @@ module ietf-entity {
     type enumeration {
       enum unknown {
         value 1;
+        description
+          "The resource is unable to report administrative state.";
       }
       enum locked {
         value 2;
+        description
+          "The resource is administratively prohibited from use.";
       }
       enum shutting-down {
         value 3;
+        description
+          "The resource usage is administratively limited to current
+           instances of use.";
+        
       }
       enum unlocked {
         value 4;
+        description
+          "The resource is not administratively prohibited from use.";
       }
     }
+    description
+      "Represents the various possible administrative states.";
     reference "RFC 4268, EntityAdminState";
   }
 
@@ -123,17 +135,28 @@ module ietf-entity {
     type enumeration {
       enum unknown {
         value 1;
+        description
+          "The resource is unable to report operational state.";
       }
       enum disabled {
         value 2;
+        description
+          "The resource is totally inoperable.";
       }
       enum enabled {
         value 3;
+        description
+          "The resource is partially or fully operable.";
       }
       enum testing {
         value 4;
+        description
+          "The resource is currently being tested and cannot
+           therefore report whether it is operational or not.";
       }
     }
+    description
+      "Represents the possible values of operational states.";
     reference "RFC 4268, EntityOperState";
   }
 
@@ -141,44 +164,84 @@ module ietf-entity {
     type enumeration {
       enum unknown {
         value 1;
-      }
-      enum active {
-        value 2;
+        description
+          "The resource is unable to report usage state.";
       }
       enum idle {
+        value 2;
+        description
+          "The resource is servicing no users.";
+      }
+      enum active {
         value 3;
+        description
+          "The resource is currently in use and it has sufficient
+           spare capacity to provide for additional users.";
       }
       enum busy {
         value 4;
+        description
+          "The resource is currently in use, but it currently has
+           no spare capacity to provide for additional users.";
       }
     }
+    description
+      "Represents the possible values of usage states.";
     reference "RFC 4268, EntityUsageState";
   }
 
   typedef entity-alarm-status {
-    type enumeration {
-      enum unknown {
-        value 0;
+    type bits {
+      bit unknown {
+        position 0;
+        description
+          "The resource is unable to report alarm state.";
       }
-      enum under-repair {
-        value 1;
+      bit under-repair {
+        position 1;
+        description
+          "The resource is currently being repaired, which, depending
+           on the implementation, may make the other values in this
+           bit string not meaningful.";
       }
-      enum critical {
-        value 2;
+      bit critical {
+        position 2;
+        description
+          "One or more critical alarms are active against the
+           resource.";
       }
-      enum major {
-        value 3;
+      bit major {
+        position 3;
+        description
+          "One or more major alarms are active against the resource.";
       }
-      enum minor {
-        value 4;
+      bit minor {
+        position 4;
+        description
+          "One or more minor alarms are active against the resource.";
       }
-      enum warning {
-        value 5;
+      bit warning {
+        position 5;
+        description
+          "One or more warning alarms are active against the resource.
+           This alarm status is not defined in X.733.";
       }
-      enum indeterminate {
-        value 6;
+      bit indeterminate {
+        position 6;
+        description
+          "One or more alarms of whose perceived severity cannot be
+           determined are active against this resource.
+           This alarm status is not defined in X.733.";
       }
     }
+    description
+      "Represents the possible values of alarm status.
+       An Alarm [RFC3877] is a persistent indication of an error or
+       warning condition.
+
+       When no bits of this attribute are set, then no active
+       alarms are known against this entity and it is not under
+       repair.";
     reference "RFC 4268, EntityAlarmStatus";
   }
 
@@ -186,17 +249,34 @@ module ietf-entity {
     type enumeration {
       enum unknown {
         value 1;
+        description
+          "The resource is unable to report standby state.";
       }
       enum hot-standby {
         value 2;
+        description
+          "The resource is not providing service, but it will be
+           immediately able to take over the role of the resource
+           to be backed up, without the need for initialization
+           activity, and will contain the same information as the
+           resource to be backed up.";
       }
       enum cold-standby {
         value 3;
+        description
+          "The resource is to back up another resource, but will not
+           be immediately able to take over the role of a resource
+           to be backed up, and will require some initialization
+           activity.";
       }
       enum providing-service {
         value 4;
+        description
+          "The resource is providing service.";
       }
     }
+    description
+      "Represents the possible values of standby status.";
     reference "RFC 4268, EntityStandbyStatus";
   }
 
@@ -204,41 +284,76 @@ module ietf-entity {
     type enumeration {
       enum other {
         value 1;
+        description
+          "A measure other than those listed below.";
       }
       enum unknown {
         value 2;
+        description
+          "An unknown measurement, or arbitrary, relative numbers";
       }
       enum volts-AC {
         value 3;
+        description
+          "A measure of electric potential (alternating current).";
       }
       enum volts-DC {
         value 4;
+        description
+          "A measure of electric potential (direct current).";
       }
       enum amperes {
         value 5;
+        description
+          "A measure of electric current.";
       }
       enum watts {
         value 6;
+        description
+          "A measure of power.";
       }
       enum hertz {
         value 7;
+        description
+          "A measure of frequency.";
       }
       enum celsius {
         value 8;
+        description
+          "A measure of temperature.";
       }
       enum percent-RH {
         value 9;
+        description
+          "A measure of percent relative humidity.";
       }
       enum rpm {
         value 10;
+        description
+          "A measure of shaft revolutions per minute.";
       }
       enum cmm {
         value 11;
+        description
+          "A measure of cubic meters per minute (airflow).";
       }
       enum truth-value {
         value 12;
+        description
+          "Value takes { true(1), false(2) }";
       }
     }
+    description
+      "An object using this data type represents the Entity Sensor
+       measurement data type associated with a physical sensor
+       value. The actual data units are determined by examining an
+       object of this type together with the associated
+       entity-sensor-data-scale object.
+
+       An object of this type SHOULD be defined together with
+       objects of type entity-sensor-data-scale and
+       entity-sensor-precision. These three types are used to identify
+       the semantics of an object of type entity-sensor-value.";
     reference "RFC 3433, EntitySensorDataType";
   }
 
@@ -303,6 +418,40 @@ module ietf-entity {
     type int32 {
       range "-8 .. 9";
     }
+    description
+      "An object using this data type represents a sensor
+       precision range.
+
+       An object of this type SHOULD be defined together with
+       objects of type entity-sensor-data-type and
+       entity-sensor-data-scale.  Together, associated objects of
+       these three types are used to identify the semantics of an
+       object of type entity-sensor-value.
+
+       If an object of this type contains a value in the range 1 to
+       9, it represents the number of decimal places in the
+       fractional part of an associated EntitySensorValue fixed-
+       point number.
+
+       If an object of this type contains a value in the range -8
+       to -1, it represents the number of accurate digits in the
+       associated EntitySensorValue fixed-point number.
+
+       The value zero indicates the associated EntitySensorValue
+       object is not a fixed-point number.
+
+       Agent implementors must choose a value for the associated
+       entity-sensor-precision object so that the precision and
+       accuracy of the associated entity-sensor-value object is
+       correctly indicated.
+
+       For example, a physical entity representing a temperature
+       sensor that can measure 0 degrees to 100 degrees C in 0.1
+       degree increments, +/- 0.05 degrees, would have an
+       entity-sensor-precision value of '1', an entity-sensor-data-scale
+       value of 'units(9)', and an entity-sensor-value ranging from
+       '0' to '1000'.  The entity-sensor-value would be interpreted
+       as 'degrees C * 10'.";
     reference "RFC 3433, EntitySensorPrecision";
   }
 
@@ -310,6 +459,45 @@ module ietf-entity {
     type int32 {
       range "-1000000000 .. 1000000000";
     }
+    description
+     "An object using this data type represents an Entity Sensor
+      value.
+
+      An object of this type SHOULD be defined together with objects
+      of type entity-sensor-data-type, entity-sensor-data-scale,
+      and entity-sensor-precision.  Together, associated objects of
+      those three types are used to identify the semantics of an
+      object of this data type.
+
+      The semantics of an object using this data type are
+      determined by the value of the associated
+      entity-sensor-data-type object.
+
+      If the associated entity-sensor-data-type object is equal to
+      'voltsAC(3)', 'voltsDC(4)', 'amperes(5)', 'watts(6),
+      'hertz(7)', 'celsius(8)', or 'cmm(11)', then an object of
+       this type MUST contain a fixed point number ranging from
+       -999,999,999 to +999,999,999.  The value -1000000000
+       indicates an underflow error. The value +1000000000
+       indicates an overflow error.  The entity-sensor-precision
+       indicates how many fractional digits are represented in the
+       associated entity-sensor-value object.
+
+       If the associated entity-sensor-data-type object is equal to
+       'percentRH(9)', then an object of this type MUST contain a
+       number ranging from 0 to 100.
+
+       If the associated entity-sensor-data-type object is equal to
+       'rpm(10)', then an object of this type MUST contain a number
+       ranging from -999,999,999 to +999,999,999.
+
+       If the associated entity-sensor-data-type object is equal to
+       'truthvalue(12)', then an object of this type MUST contain
+       either the value 'true(1)' or the value 'false(2)'.
+
+       If the associated entity-sensor-data-type object is equal to
+       'other(1)' or unknown(2)', then an object of this type MUST
+       contain a number ranging from -1000000000 to 1000000000.";
     reference "RFC 3433, EntitySensorValue";
   }
 
@@ -317,14 +505,27 @@ module ietf-entity {
     type enumeration {
       enum ok {
         value 1;
+        description
+          "Indicates that the agent can obtain the sensor value.";
       }
       enum unavailable {
         value 2;
+        description
+          "Indicates that the agent presently cannot obtain the
+           sensor value.";
       }
       enum nonoperational {
         value 3;
+        description
+          "Indicates that the agent believes the sensor is broken.
+           The sensor could have a hard failure (disconnected wire),
+           or a soft failure such as out-of-range, jittery, or wildly
+           fluctuating readings.";
       }
     }
+    description
+      "An object using this data type represents the operational
+       status of a physical sensor.";
     reference "RFC 3433, EntitySensorStatus";
   }
 
@@ -332,7 +533,13 @@ module ietf-entity {
    * Identities
    */
 
-  identity entity-physical-class;
+  identity entity-physical-class {
+    description
+      "This identity is the base of all physical entity class identifiers.
+       Used instead of the IANAPhysicalClass textual convention to identify
+       different physical entity classes.";
+  }
+
 
   /*
    * Operational state data nodes
