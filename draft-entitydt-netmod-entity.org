@@ -1,7 +1,7 @@
 # -*- org -*-
 
-This document defines a YANG data model for the management of network
-entities.
+This document defines a YANG data model for the management of multiple
+physical entities managed by a single server.
 
 * Introduction
 ** Terminology
@@ -131,16 +131,16 @@ from one of them.
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
-/entity-state/physical-entity list is typically mapped to one
-EntPhysicalEntry.  Objects that are writable in the MIB are mapped to
-nodes in the /entity/physical-entity list.
+/entity-state/physical-entity list is mapped to one EntPhysicalEntry.
+Objects that are writable in the MIB are mapped to nodes in the
+/entity/physical-entity list.
 
 The "physical-index" leaf MUST contain the value of the corresponding
 entPhysicalEntry's entPhysicalIndex.
 
 The "class" leaf is mapped to both entPhysicalClass and
 entPhysicalVendorType.  If the value of the "class" leaf is an
-identity that is either derived from or is one of the identites in the
+identity that is either derived from or is one of the identities in the
 "iana-entity" module, then entPhysicalClass contains the corresponding
 IANAPhysicalClass enumeration value.  Otherwise, entPhysicalClass
 contains the IANAPhysicalClass value "other(1)".  Vendors are

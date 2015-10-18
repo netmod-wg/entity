@@ -63,7 +63,7 @@ module ietf-entity {
     prefix yang;
   }
 
-  revision 2015-10-13 {
+  revision 2015-10-20 {
     description
       "Initial revision.";
   }
@@ -118,7 +118,6 @@ module ietf-entity {
         description
           "The resource usage is administratively limited to current
            instances of use.";
-        
       }
       enum unlocked {
         value 4;
@@ -445,7 +444,7 @@ module ietf-entity {
           "Data scaling factor of 10^24.";
       }
     }
-    description 
+    description
       "An object using this data type represents a data scaling
        factor, represented with an International System of Units
        (SI) prefix.  The actual data units are determined by
@@ -456,7 +455,7 @@ module ietf-entity {
        objects of type entity-sensor-data-type and
        entity-sensor-precision.  Together, associated objects of
        these three types are used to identify the semantics of an
-       object of type entity-sensor-value.";    
+       object of type entity-sensor-value.";
     reference "RFC 3433, EntitySensorDataScale";
   }
 
@@ -657,7 +656,7 @@ module ietf-entity {
           path "../../physical-entity/name";
         }
         description
-          "The name of the physical entity that 'contains' 
+          "The name of the physical entity that 'contains'
            this physical entity.";
         reference "RFC 6933: entPhysicalContainedIn";
         // read-only in MIB
@@ -803,9 +802,9 @@ module ietf-entity {
         type string {
           length "0 .. 32";
         }
-        description 
-          "An 'alias' name for the physical entity, as specified by 
-           a network manager, and provides a non-volatile 'handle' 
+        description
+          "An 'alias' name for the physical entity, as specified by
+           a network manager, and provides a non-volatile 'handle'
            for the physical entity.
 
            On the first instantiation of a physical entity, the value
@@ -854,7 +853,7 @@ module ietf-entity {
       leaf mfg-date {
         type yang:date-and-time;
         description
-          "The date of manufacturing of the managed entity.  If the 
+          "The date of manufacturing of the managed entity.  If the
            manufacturing date is unknown or not supported, the object
            is not instantiated.  The special value '0000000000000000'H
            may also be returned in this case.";
@@ -886,7 +885,7 @@ module ietf-entity {
         type yang:date-and-time;
         description
           "the date and time when the value of any of the
-           admin-state, oper-state, usage-state, alarm-status, 
+           admin-state, oper-state, usage-state, alarm-status,
            or standby-status changed for this entity.
 
            If there has been no change since
@@ -905,7 +904,7 @@ module ietf-entity {
         type entity-admin-state;
         description
           "The administrative state for this entity.
-          
+
            This object refers to an entities administrative
            permission to service both other entities within
            its containment hierarchy as well other users of
@@ -950,7 +949,7 @@ module ietf-entity {
 
            This object refers to an entity's ability to service more
            physical entities in a containment hierarchy.
-           
+
            Some entities will exhibit only a subset of the
            usage state values.  Entities that are unable to ever
            service any entities within a containment hierarchy will
@@ -1196,7 +1195,7 @@ module ietf-entity {
         type entity-admin-state;
         description
           "The administrative state for this entity.
-          
+
            This object refers to an entities administrative
            permission to service both other entities within
            its containment hierarchy as well other users of
