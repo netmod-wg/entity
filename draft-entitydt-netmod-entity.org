@@ -4,6 +4,13 @@ This document defines a YANG data model for the management of multiple
 physical entities managed by a single server.
 
 * Introduction
+
+This document defines a YANG data model for the management of multiple
+physical entities managed by a single server.
+
+The data model includes configuration data and state data (status
+information and counters for the collection of statistics).
+
 ** Terminology
 
 The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -51,31 +58,32 @@ following structure:
      +--ro entity-state
      |  +--ro last-change?       yang:date-and-time
      |  +--ro physical-entity* [name]
-     |     +--ro name            string
-     |     +--ro class?          identityref
-     |     +--ro physical-index? int32 {entity-mib}?
-     |     +--ro description?    string
-     |     +--ro contained-in*   -> ../../physical-entity/name
-     |     +--ro contains-child* -> ../../physical-entity/name
-     |     +--ro parent-rel-pos? int32
-     |     +--ro hardware-rev?   string
-     |     +--ro firmware-rev?   string
-     |     +--ro software-rev?   string
-     |     +--ro serial-num?     string
-     |     +--ro mfg-name?       string
-     |     +--ro model-name?     string
-     |     +--ro alias?          string
-     |     +--ro asset-id?       string
-     |     +--ro is-fru?         boolean
-     |     +--ro mfg-date?       yang:date-and-time
-     |     +--ro uri*            inet:uri
-     |     +--ro uuid?           yang:uuid
-     |     +--ro last-changed?   yang:date-and-time {entity-state}?
-     |     +--ro admin-state?    entity-admin-state {entity-state}?
-     |     +--ro oper-state?     entity-oper-state {entity-state}?
-     |     +--ro usage-state?    entity-usage-state {entity-state}?
-     |     +--ro alarm-status?   entity-alarm-status {entity-state}?
-     |     +--ro standby-status? entity-standby-status {entity-state}?
+     |     +--ro name                  string
+     |     +--ro class?                identityref
+     |     +--ro physical-index?       int32 {entity-mib}?
+     |     +--ro description?          string
+     |     +--ro contained-in*         -> ../../physical-entity/name
+     |     +--ro contains-child*       -> ../../physical-entity/name
+     |     +--ro parent-rel-pos?       int32
+     |     +--ro hardware-rev?         string
+     |     +--ro firmware-rev?         string
+     |     +--ro software-rev?         string
+     |     +--ro serial-num?           string
+     |     +--ro mfg-name?             string
+     |     +--ro model-name?           string
+     |     +--ro alias?                string
+     |     +--ro asset-id?             string
+     |     +--ro is-fru?               boolean
+     |     +--ro mfg-date?             yang:date-and-time
+     |     +--ro uri*                  inet:uri
+     |     +--ro uuid?                 yang:uuid
+     |     +--ro state {entity-state}?
+     |     |  +--ro state-last-changed?     yang:date-and-time
+     |     |  +--ro admin-state?            entity-admin-state
+     |     |  +--ro oper-state?             entity-oper-state
+     |     |  +--ro usage-state?            entity-usage-state
+     |     |  +--ro alarm-status?           entity-alarm-status
+     |     |  +--ro standby-status?         entity-standby-status
      |     +--ro sensor-data {entity-sensor}?
      |        +--ro data-type?              entity-sensor-data-type
      |        +--ro data-scale?             entity-sensor-data-scale
@@ -87,28 +95,29 @@ following structure:
      |        +--ro value-update-rate?      uint32
      +--rw entity {entity-config}?
         +--rw physical-entity* [name]
-           +--rw name          string
-           +--rw serial-num?   string
-           +--rw alias?        string
-           +--rw asset-id?     string
-           +--rw uri*          inet:uri
+           +--rw name           string
+           +--rw serial-num?    string
+           +--rw alias?         string
+           +--rw asset-id?      string
+           +--rw uri*           inet:uri
+           +--rw admin-state?   entity-admin-state {entity-state}?
 
   notifications:
      +---n ent-config-change
-     +---n ent-state-oper-enabled      {entity-state}?
+     +---n ent-state-oper-enabled {entity-state}?
      |  +--ro name?           -> /entity-state/physical-entity
                                  /name
      |  +--ro admin-state?    -> /entity-state/physical-entity
-                                 /admin-state
+                                 /state/admin-state
      |  +--ro alarm-status?   -> /entity-state/physical-entity
-                                 /alarm-status
-     +---n ent-state-oper-disabled     {entity-state}?
+                                 /state/alarm-status
+     +---n ent-state-oper-disabled {entity-state}?
         +--ro name?           -> /entity-state/physical-entity
                                  /name
         +--ro admin-state?    -> /entity-state/physical-entity
-                                 /admin-state
+                                 /state/admin-state
         +--ro alarm-status?   -> /entity-state/physical-entity
-                                 /alarm-status
+                                 /state/alarm-status
 
 ** The Physical Entry Lists
 
@@ -119,14 +128,14 @@ name.  Furthermore, each entity has a mandatory "class" leaf.
 The "iana-entity" module defines YANG identities for the
 hardware types in the IANA-maintained "IANA-ENTITY-MIB" registry.
 
-There is one optional list of configured physical entities
-("/entity/physical-entity"), and a separate list for the operational
-state of all physical entities ("/entity-state/physical-entity").
-
 The "class" leaf is a YANG identity that describes the type of the
 hardware.  Vendors are encouraged to either directly use one of the
 common IANA-defined identities, or derive a more specific identity
 from one of them.
+
+There is one optional list of configured physical entities
+("/entity/physical-entity"), and a separate list for the operational
+state of all physical entities ("/entity-state/physical-entity").
 
 * Relationship to ENTITY-MIB
 
@@ -177,15 +186,19 @@ objects in the ENTITY-MIB.
 
 * Relationship to ENTITY-SENSOR-MIB
 
+TBD relationship to ^RFC3433^.
+
 * Relationship to ENTITY-STATE-MIB
+
+TBD relationship to ^RFC4268^.
 
 * Entity YANG Module
 
-!! include-figure ietf-entity.yang extract-to="ietf-entity@2015-08-20.yang"
+!! include-figure ietf-entity.yang extract-to="ietf-entity@2015-10-19.yang"
 
-Move this to a separate document:
+Move this to a separate document?:
 
-!! include-figure iana-entity.yang extract-to="iana-entity@2015-08-20.yang"
+!! include-figure iana-entity.yang extract-to="iana-entity@2015-10-19.yang"
 
 * IANA Considerations @iana@
 

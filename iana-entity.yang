@@ -1,20 +1,38 @@
 module iana-entity {
-  //namespace "urn:ietf:params:xml:ns:yang:iana-entity";
-  namespace "urn:example:iana-entity";
+  namespace "urn:ietf:params:xml:ns:yang:iana-entity";
   prefix ianaent;
 
   import ietf-entity {
     prefix ent;
   }
 
+  organization "IANA";
+  contact
+    "        Internet Assigned Numbers Authority
+
+     Postal: ICANN
+             4676 Admiralty Way, Suite 330
+             Marina del Rey, CA 90292
+
+     Tel:    +1 310 823 9358
+     <mailto:iana@iana.org>";
+
+
   description
     "IANA defined identities for physical class.";
   reference
     "https://www.iana.org/assignments/ianaentity-mib/ianaentity-mib";
 
-  revision 2015-10-20 {
+  // RFC Ed.: replace XXXX with actual RFC number and remove this
+  // note.
+
+  // RFC Ed.: update the date below with the date of RFC publication
+  // and remove this note.
+  revision 2015-10-19 {
     description
       "Initial revision.";
+    reference
+      "RFC XXXX: A YANG Data Model for Entity Managemet";
   }
 
   identity unknown {
@@ -63,8 +81,7 @@ module iana-entity {
     base ent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
-       is a power-supplying component.
-";
+       is a power-supplying component.";
   }
 
   identity fan {
@@ -138,13 +155,13 @@ module iana-entity {
        is some sort of battery.";
   }
 
-  identity storagre-drive {
+  identity storage-drive {
     base ent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of entity with data storage capability as main
-       functionality, e.g., disk drive (HDD), solid state device (SSD),
-       hybrid (SSHD), object storage (OSD) or other.";
+       functionality, e.g., disk drive (HDD), solid state device
+       (SSD), hybrid (SSHD), object storage (OSD) or other.";
   }
 }
 

@@ -1,59 +1,6 @@
 module ietf-entity {
-
-  /************
-   NOTES:
-     allow NMS to populate config
-     server will use config to populate operational with configed
-     values and then populate the rest of operational from
-     its internal code - done.
-
-     will oper be a superset of config? yes
-
-     will defaults be in oper? yes
-
-     INDEXING:  need permanant handle
-     current integer is arbitrary and not required to persist.
-     The serialNum, aliasID (other???) do persist so how do existing
-     SNMP agents bring back these mappings after a reboot.
-
-     Suggest: make entPhyscalIndex sticky
-     could use a string instead -- solves the renumbering all ACLs
-     problem so a new physical entity can be added without
-     renumbering the old ones
-
-     Keep the int32 index for backward reference but
-     populate the config and oper used
-
-     entity-state-mib adds 4 leafs that could be folded in
-     use if-feature to make it optional - done.
-
-     same consensus for entity-sensor-mib - done.
-
-     need entPhysicalContainsMapping for reverse containment
-     but this can be in the main table - done.
-
-     do not need entLogicalTable -- SNMP only so this is not
-     needed in the YANG version
-
-     contained-in and contained-by should be leaf-lists - done.
-
-     entLastChangeTime is a timestamp
-     do we need it to be date-and-time
-     (type TimeStamp now) - done; date-and-time.
-
-     entConfigChange is useful but maybe covered by
-     netconf-config-change notification, or pub/sub. it is also a bad
-     name, since it fires when the opstate changes...
-     Issue: need to think about which notifs to define.
-
-     entPhySensorOperStatus compared with entStateOper- overlap?
-
-
-   ***********/
-
   yang-version 1.1;
-  //namespace "urn:ietf:params:xml:ns:yang:ietf-entity";
-  namespace "urn:example:ietf-entity";
+  namespace "urn:ietf:params:xml:ns:yang:ietf-entity";
   prefix ent;
 
   import ietf-inet-types {
@@ -63,9 +10,57 @@ module ietf-entity {
     prefix yang;
   }
 
-  revision 2015-10-20 {
+  organization
+    "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
+
+  contact
+    "WG Web:   <http://tools.ietf.org/wg/netmod/>
+     WG List:  <mailto:netmod@ietf.org>
+
+     WG Chair: Thomas Nadeau
+               <mailto:tnadeau@lucidvision.com>
+
+     WG Chair: Juergen Schoenwaelder
+               <mailto:j.schoenwaelder@jacobs-university.de>
+
+     WG Chair: Kent Watsen
+               <mailto:kwatsen@juniper.net>
+
+     Editor:   Andy Bierman
+               <mailto:andy@yumaworks.com>
+
+     Editor:   Martin Bjorklund
+               <mailto:mbj@tail-f.com>
+
+     Editor:   ";
+
+  // RFC Ed.: replace XXXX with actual RFC number and remove this
+  // note.
+
+  description
+    "This module contains a collection of YANG definitions for
+     managing physical entities.
+
+     Copyright (c) 2015 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
+
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject
+     to the license terms contained in, the Simplified BSD License
+     set forth in Section 4.c of the IETF Trust's Legal Provisions
+     Relating to IETF Documents
+     (http://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX; see
+     the RFC itself for full legal notices.";
+
+  // RFC Ed.: update the date below with the date of RFC publication
+  // and remove this note.
+  revision 2015-10-19 {
     description
       "Initial revision.";
+    reference
+      "RFC XXXX: A YANG Data Model for Entity Managemet";
   }
 
   /*
@@ -81,20 +76,20 @@ module ietf-entity {
 
   feature entity-config {
     description
-      "Indicates that the device supports configuration of
+      "Indicates that the server supports configuration of
        physical entities.";
   }
 
   feature entity-state {
     description
       "Indicates the ENTITY-STATE-MIB objects are supported";
-    reference "RFC 4268; Entity State MIB";
+    reference "RFC 4268: Entity State MIB";
   }
 
   feature entity-sensor {
     description
       "Indicates the ENTITY-SENSOR-MIB objects are supported";
-    reference "RFC 3433; Entity Sensor MIB";
+    reference "RFC 3433: Entity Sensor MIB";
   }
 
   /*
@@ -127,7 +122,7 @@ module ietf-entity {
     }
     description
       "Represents the various possible administrative states.";
-    reference "RFC 4268, EntityAdminState";
+    reference "RFC 4268: EntityAdminState";
   }
 
   typedef entity-oper-state {
@@ -156,7 +151,7 @@ module ietf-entity {
     }
     description
       "Represents the possible values of operational states.";
-    reference "RFC 4268, EntityOperState";
+    reference "RFC 4268: EntityOperState";
   }
 
   typedef entity-usage-state {
@@ -241,7 +236,7 @@ module ietf-entity {
        When no bits of this attribute are set, then no active
        alarms are known against this entity and it is not under
        repair.";
-    reference "RFC 4268, EntityAlarmStatus";
+    reference "RFC 4268: EntityAlarmStatus";
   }
 
   typedef entity-standby-status {
@@ -276,7 +271,7 @@ module ietf-entity {
     }
     description
       "Represents the possible values of standby status.";
-    reference "RFC 4268, EntityStandbyStatus";
+    reference "RFC 4268: EntityStandbyStatus";
   }
 
   typedef entity-sensor-data-type {
@@ -339,21 +334,21 @@ module ietf-entity {
       enum truth-value {
         value 12;
         description
-          "Value takes { true(1), false(2) }";
+          "Value is one of 1 (true) or 2 (false)";
       }
     }
     description
-      "An object using this data type represents the Entity Sensor
+      "An node using this data type represents the Entity Sensor
        measurement data type associated with a physical sensor
        value. The actual data units are determined by examining an
-       object of this type together with the associated
-       entity-sensor-data-scale object.
+       node of this type together with the associated
+       entity-sensor-data-scale node.
 
-       An object of this type SHOULD be defined together with
-       objects of type entity-sensor-data-scale and
+       An node of this type SHOULD be defined together with nodes
+       of type entity-sensor-data-scale and
        entity-sensor-precision. These three types are used to identify
-       the semantics of an object of type entity-sensor-value.";
-    reference "RFC 3433, EntitySensorDataType";
+       the semantics of an node of type entity-sensor-value.";
+    reference "RFC 3433: EntitySensorDataType";
   }
 
   typedef entity-sensor-data-scale {
@@ -445,18 +440,18 @@ module ietf-entity {
       }
     }
     description
-      "An object using this data type represents a data scaling
-       factor, represented with an International System of Units
-       (SI) prefix.  The actual data units are determined by
-       examining an object of this type together with the
-       associated entity-sensor-data-type.
+      "An node using this data type represents a data scaling
+       factor, represented with an International System of Units (SI)
+       prefix.  The actual data units are determined by examining an
+       node of this type together with the associated
+       entity-sensor-data-type.
 
-       An object of this type SHOULD be defined together with
-       objects of type entity-sensor-data-type and
-       entity-sensor-precision.  Together, associated objects of
-       these three types are used to identify the semantics of an
-       object of type entity-sensor-value.";
-    reference "RFC 3433, EntitySensorDataScale";
+       An node of this type SHOULD be defined together with nodes
+       of type entity-sensor-data-type and entity-sensor-precision.
+       Together, associated nodes of these three types are used to
+       identify the semantics of an node of type
+       entity-sensor-value.";
+    reference "RFC 3433: EntitySensorDataScale";
   }
 
   typedef entity-sensor-precision {
@@ -464,40 +459,39 @@ module ietf-entity {
       range "-8 .. 9";
     }
     description
-      "An object using this data type represents a sensor
+      "An node using this data type represents a sensor
        precision range.
 
-       An object of this type SHOULD be defined together with
-       objects of type entity-sensor-data-type and
-       entity-sensor-data-scale.  Together, associated objects of
-       these three types are used to identify the semantics of an
-       object of type entity-sensor-value.
+       An node of this type SHOULD be defined together with nodes
+       of type entity-sensor-data-type and entity-sensor-data-scale.
+       Together, associated nodes of these three types are used to
+       identify the semantics of an node of type
+       entity-sensor-value.
 
-       If an object of this type contains a value in the range 1 to
-       9, it represents the number of decimal places in the
-       fractional part of an associated entity-sensor-value fixed-
-       point number.
+       If an node of this type contains a value in the range 1 to 9,
+       it represents the number of decimal places in the fractional
+       part of an associated entity-sensor-value fixed- point number.
 
-       If an object of this type contains a value in the range -8
-       to -1, it represents the number of accurate digits in the
+       If an node of this type contains a value in the range -8 to
+       -1, it represents the number of accurate digits in the
        associated entity-sensor-value fixed-point number.
 
        The value zero indicates the associated entity-sensor-value
-       object is not a fixed-point number.
+       node is not a fixed-point number.
 
-       Agent implementors must choose a value for the associated
-       entity-sensor-precision object so that the precision and
-       accuracy of the associated entity-sensor-value object is
+       Server implementors must choose a value for the associated
+       entity-sensor-precision node so that the precision and
+       accuracy of the associated entity-sensor-value node is
        correctly indicated.
 
        For example, a physical entity representing a temperature
        sensor that can measure 0 degrees to 100 degrees C in 0.1
        degree increments, +/- 0.05 degrees, would have an
-       entity-sensor-precision value of '1', an entity-sensor-data-scale
-       value of 'units(9)', and an entity-sensor-value ranging from
-       '0' to '1000'.  The entity-sensor-value would be interpreted
-       as 'degrees C * 10'.";
-    reference "RFC 3433, EntitySensorPrecision";
+       entity-sensor-precision value of '1', an
+       entity-sensor-data-scale value of 'units', and an
+       entity-sensor-value ranging from '0' to '1000'.  The
+       entity-sensor-value would be interpreted as 'degrees C * 10'.";
+    reference "RFC 3433: EntitySensorPrecision";
   }
 
   typedef entity-sensor-value {
@@ -505,45 +499,43 @@ module ietf-entity {
       range "-1000000000 .. 1000000000";
     }
     description
-     "An object using this data type represents an Entity Sensor
+     "An node using this data type represents an Entity Sensor
       value.
 
-      An object of this type SHOULD be defined together with objects
-      of type entity-sensor-data-type, entity-sensor-data-scale,
-      and entity-sensor-precision.  Together, associated objects of
-      those three types are used to identify the semantics of an
-      object of this data type.
+      An node of this type SHOULD be defined together with nodes
+      of type entity-sensor-data-type, entity-sensor-data-scale, and
+      entity-sensor-precision.  Together, associated nodes of those
+      three types are used to identify the semantics of an node of
+      this data type.
 
-      The semantics of an object using this data type are
-      determined by the value of the associated
-      entity-sensor-data-type object.
+      The semantics of an node using this data type are determined
+      by the value of the associated entity-sensor-data-type node.
 
-      If the associated entity-sensor-data-type object is equal to
-      'voltsAC(3)', 'voltsDC(4)', 'amperes(5)', 'watts(6),
-      'hertz(7)', 'celsius(8)', or 'cmm(11)', then an object of
-       this type MUST contain a fixed point number ranging from
-       -999,999,999 to +999,999,999.  The value -1000000000
-       indicates an underflow error. The value +1000000000
-       indicates an overflow error.  The entity-sensor-precision
-       indicates how many fractional digits are represented in the
-       associated entity-sensor-value object.
+      If the associated entity-sensor-data-type node is equal to
+      'voltsAC', 'voltsDC', 'amperes', 'watts', 'hertz',
+      'celsius', or 'cmm', then an node of this type MUST
+      contain a fixed point number ranging from -999,999,999 to
+      +999,999,999.  The value -1000000000 indicates an underflow
+      error. The value +1000000000 indicates an overflow error.  The
+      entity-sensor-precision indicates how many fractional digits are
+      represented in the associated entity-sensor-value node.
 
-       If the associated entity-sensor-data-type object is equal to
-       'percentRH(9)', then an object of this type MUST contain a
-       number ranging from 0 to 100.
+      If the associated entity-sensor-data-type node is equal to
+      'percentRH', then an node of this type MUST contain a
+      number ranging from 0 to 100.
 
-       If the associated entity-sensor-data-type object is equal to
-       'rpm(10)', then an object of this type MUST contain a number
-       ranging from -999,999,999 to +999,999,999.
+      If the associated entity-sensor-data-type node is equal to
+      'rpm', then an node of this type MUST contain a number
+      ranging from -999,999,999 to +999,999,999.
 
-       If the associated entity-sensor-data-type object is equal to
-       'truthvalue(12)', then an object of this type MUST contain
-       either the value 'true(1)' or the value 'false(2)'.
+      If the associated entity-sensor-data-type node is equal to
+      'truthvalue', then an node of this type MUST contain
+      either the value 1 (true) or the value 2 (false)'.
 
-       If the associated entity-sensor-data-type object is equal to
-       'other(1)' or unknown(2)', then an object of this type MUST
-       contain a number ranging from -1000000000 to 1000000000.";
-    reference "RFC 3433, EntitySensorValue";
+      If the associated entity-sensor-data-type node is equal to
+      'other' or unknown', then an node of this type MUST
+      contain a number ranging from -1000000000 to 1000000000.";
+    reference "RFC 3433: EntitySensorValue";
   }
 
   typedef entity-sensor-status {
@@ -551,27 +543,27 @@ module ietf-entity {
       enum ok {
         value 1;
         description
-          "Indicates that the agent can obtain the sensor value.";
+          "Indicates that the server can obtain the sensor value.";
       }
       enum unavailable {
         value 2;
         description
-          "Indicates that the agent presently cannot obtain the
+          "Indicates that the server presently cannot obtain the
            sensor value.";
       }
       enum nonoperational {
         value 3;
         description
-          "Indicates that the agent believes the sensor is broken.
+          "Indicates that the server believes the sensor is broken.
            The sensor could have a hard failure (disconnected wire),
            or a soft failure such as out-of-range, jittery, or wildly
            fluctuating readings.";
       }
     }
     description
-      "An object using this data type represents the operational
+      "An node using this data type represents the operational
        status of a physical sensor.";
-    reference "RFC 3433, EntitySensorStatus";
+    reference "RFC 3433: EntitySensorStatus";
   }
 
   /*
@@ -580,9 +572,8 @@ module ietf-entity {
 
   identity entity-physical-class {
     description
-      "This identity is the base of all physical entity class identifiers.
-       Used instead of the IANAPhysicalClass textual convention to identify
-       different physical entity classes.";
+      "This identity is the base for all physical entity class
+       identifiers.";
   }
 
 
@@ -592,6 +583,8 @@ module ietf-entity {
 
   container entity-state {
     config false;
+    description
+      "Data nodes for the operational state of physical entities.";
 
     leaf last-change {
       type yang:date-and-time;
@@ -609,23 +602,19 @@ module ietf-entity {
         type string;
         description
           "Administrative name assigned to this physical entity.
-           No restrictions apply. Not required to be the same
-           as entPhysicalName.";
+           No restrictions apply. Not required to be the same as
+           entPhysicalName.";
       }
 
       leaf class {
         type identityref {
           base entity-physical-class;
         }
+        mandatory true;
         description
           "An indication of the general hardware type
            of the physical entity.";
         reference "RFC 6933: entPhysicalClass";
-        // this is the iana-physical-class enum in the MIB
-        // combined with vendor-type
-        // The idea is that vendors can "subclass" any of the
-        // IANA-defined values, derive directly from
-        // entity-physical-class.
       }
 
       leaf physical-index {
@@ -642,13 +631,12 @@ module ietf-entity {
       leaf description {
         type string;
         description
-          "A textual description of physical entity.  This object
+          "A textual description of physical entity.  This node
            should contain a string that identifies the manufacturer's
            name for the physical entity and should be set to a
            distinct value for each version or model of the physical
            entity.";
         reference "RFC 6933: entPhysicalDescr";
-        // read-only in MIB
       }
 
       leaf-list contained-in {
@@ -659,8 +647,6 @@ module ietf-entity {
           "The name of the physical entity that 'contains'
            this physical entity.";
         reference "RFC 6933: entPhysicalContainedIn";
-        // read-only in MIB
-        // only a leaf in MIB
       }
 
       leaf-list contains-child {
@@ -670,9 +656,6 @@ module ietf-entity {
         description
           "The name of the contained physical entity.";
         reference "RFC 6933: entPhysicalChildIndex";
-        // read-only INDEX in MIB
-        // should this be 'name' string instead of integer?
-        // multiple entPhysicalContainsEntry instances in MIB
       }
 
       leaf parent-rel-pos {
@@ -680,13 +663,12 @@ module ietf-entity {
           range "0 .. 2147483647";
         }
         description
-          "An indication of the relative position of this 'child'
-           component among all its 'sibling' components.  Sibling
+          "An indication of the relative position of this child
+           component among all its sibling components.  Sibling
            components are defined as physical entities that share the
            same instance values of each of the contained-in
            and class elements.";
         reference "RFC 6933: entPhysicalParentRelPos";
-        // read-only in MIB
       }
 
       leaf hardware-rev {
@@ -694,56 +676,25 @@ module ietf-entity {
         description
           "The vendor-specific hardware revision string for the
            physical entity.  The preferred value is the hardware
-           revision identifier actually printed on the component itself
-           (if present).
-
-           Note that if revision information is stored internally in a
-           non-printable (e.g., binary) format, then the agent must
-           convert such information to a printable format in an
-           implementation-specific manner.
-
-           If no specific hardware revision string is associated with
-           the physical component, or if this information is unknown to
-           the agent, then this object will contain a zero-length
-           string.";
+           revision identifier actually printed on the component
+           itself (if present).";
         reference "RFC 6933: entPhysicalHardwareRev";
-        // read-only in MIB
       }
 
       leaf firmware-rev {
         type string;
         description
           "The vendor-specific firmware revision string for the
-           physical entity.
-
-           Note that if revision information is stored internally in a
-           non-printable (e.g., binary) format, then the agent must
-           convert such information to a printable format in an
-           implementation-specific manner.
-
-           If no specific firmware programs are associated with the
-           physical component, or if this information is unknown to the
-           agent, then this object will contain a zero-length string.";
+           physical entity.";
         reference "RFC 6933: entPhysicalFirmwareRev";
-        // read-only in MIB
       }
 
       leaf software-rev {
         type string;
         description
           "The vendor-specific software revision string for the
-           physical entity.
-
-           Note that if revision information is stored internally in a
-           non-printable (e.g., binary) format, then the agent must
-           convert such information to a printable format in an
-           implementation-specific manner.
-
-           If no specific software programs are associated with the
-           physical component, or if this information is unknown to the
-           agent, then this object will contain a zero-length string.";
+           physical entity.";
         reference "RFC 6933: entPhysicalSoftwareRev";
-        // read-only in MIB
       }
 
       leaf serial-num {
@@ -753,34 +704,28 @@ module ietf-entity {
            entity.  The preferred value is the serial number string
            actually printed on the component itself (if present).
 
-           On the first instantiation of a physical entity, the value
-           of serial-num associated with that entity is set
-           to the correct vendor-assigned serial number, if this
-           information is available to the agent.  If a serial number
-           is unknown or non-existent, the serial-num will be
-           set to a zero-length string instead.";
+           If a serial number has been configured for this entity in
+           /entity/physical-entity/serial-num, this node contains the
+           configured value.";
         reference "RFC 6933: entPhysicalSerialNum";
-        // read-write in MIB
-        // write access not required if NV-storage not provided
       }
 
       leaf mfg-name {
         type string;
         description
           "The name of the manufacturer of this physical component.
-           The preferred value is the manufacturer name string actually
-           printed on the component itself (if present).
+           The preferred value is the manufacturer name string
+           actually printed on the component itself (if present).
 
-           Note that comparisons between instances of the
-           model-name, firmware-rev, software-rev, and the serial-num
-           objects are only meaningful amongst physical entities with
-           the same value of mfg-name.
+           Note that comparisons between instances of the model-name,
+           firmware-rev, software-rev, and the serial-num nodes are
+           only meaningful amongst physical entities with the same
+           value of mfg-name.
 
-           If the manufacturer name string associated with the physical
-           component is unknown to the agent, then this object will
-           contain a zero-length string.";
+           If the manufacturer name string associated with the
+           physical component is unknown to the server, then this
+           node will contain a zero-length string.";
         reference "RFC 6933: entPhysicalMfgName";
-        // read-only in MIB
       }
 
       leaf model-name {
@@ -792,10 +737,9 @@ module ietf-entity {
            component itself.
 
            If the model name string associated with the physical
-           component is unknown to the agent, then this object will
+           component is unknown to the server, then this node will
            contain a zero-length string.";
         reference "RFC 6933: entPhysicalModelName";
-        // read-only in MIB
       }
 
       leaf alias {
@@ -807,14 +751,12 @@ module ietf-entity {
            a network manager, and provides a non-volatile 'handle'
            for the physical entity.
 
-           On the first instantiation of a physical entity, the value
-           of alias associated with that entity is set to
-           the zero-length string.  However, the agent may set the
-           value to a locally unique default value, instead of a
-           zero-length string.";
+           If an alias has been configured for this entity in
+           /entity/physical-entity/alias, this node contains the
+           configured value.  If no such alias has been configured,
+           the server may set the value of this node to a locally
+           unique value.";
         reference "RFC 6933: entPhysicalAlias";
-        // read-write in MIB
-        // agent must retain the value set
       }
 
       leaf asset-id {
@@ -822,53 +764,46 @@ module ietf-entity {
           length "0 .. 32";
         }
         description
-          "This object is a user-assigned asset tracking identifier
+          "This node is a user-assigned asset tracking identifier
            (as specified by a network manager) for the physical entity
            and provides non-volatile storage of this information.
 
-           If no asset tracking information is associated with the
-           physical component, then this object will contain a
-           zero-length string.";
+           If an asset tracking identifier has been configured for
+           this entity in /entity/physical-entity/addet-id, this node
+           contains the configured value.";
         reference "RFC 6933: entPhysicalAssetID";
-        // read-write in MIB
-        // agent must retain the value set but not required
-        // if is-fru is false
       }
 
       leaf is-fru {
         type boolean;
         description
-          "This object indicates whether or not this physical entity
-           is considered a 'field replaceable unit' by the vendor.
-           If this object contains the value 'true(1)', then this
+          "This node indicates whether or not this physical entity
+           is considered a 'field replaceable unit' by the vendor.  If
+           this node contains the value 'true', then this
            physical entity identifies a field replaceable unit.  For
-           all physical entities that represent components
-           permanently contained within a field replaceable unit, the
-           value 'false(2)' should be returned for this object.";
+           all physical entities that represent components permanently
+           contained within a field replaceable unit, the value
+           'false' should be returned for this node.";
         reference "RFC 6933: entPhysicalIsFRU";
-        // read-only in MIB
-        // TruthValue is SYNTAX INTEGER { true(1), false(2) }
       }
 
       leaf mfg-date {
         type yang:date-and-time;
         description
-          "The date of manufacturing of the managed entity.  If the
-           manufacturing date is unknown or not supported, the object
-           is not instantiated.  The special value '0000000000000000'H
-           may also be returned in this case.";
+          "The date of manufacturing of the managed entity.";
         reference "RFC 6933: entPhysicalMfgDate";
-        // read-only in MIB
-        // DateAndTime is SYNTAX OCTET STRING (SIZE (8 | 11))
       }
 
       leaf-list uri {
         type inet:uri;
         description
-          "Each URI is in a separate leaf-list instance instead
-           of a white-space delimited string of URIs";
+          "This node contains identification information about the
+           physical entity.
+
+           If uris have been configured for this entity in
+           /entity/physical-entity/uri, this node contains the
+           configured values.";
         reference "RFC 6933: entPhysicalUris";
-        // read-write in MIB (SYNTAX OCTET STRING)
       }
 
       leaf uuid {
@@ -876,127 +811,122 @@ module ietf-entity {
         description
           "A Universally Unique Identifier of the physical entity.";
         reference "RFC 6933: entPhysicalUUID";
-        // read-only in MIB
-        // SYNTAX OCTET STRING (SIZE (0|16))
       }
 
-      leaf state-last-changed {
+      container state {
         if-feature entity-state;
-        type yang:date-and-time;
         description
-          "the date and time when the value of any of the
-           admin-state, oper-state, usage-state, alarm-status,
-           or standby-status changed for this entity.
+          "State-related nodes";
+        reference "RFC 4268: Entity State MIB";
 
-           If there has been no change since
-           the last re-initialization of the local system,
-           this object contains the date and time of
-           local system initialization.  If there has been
-           no change since the entity was added to the
-           local system, this object contains the date and
-           time of the insertion.";
-        reference "RFC 4268, entStateLastChanged";
-        // read-only in MIB
-      }
+        leaf state-last-changed {
+          type yang:date-and-time;
+          description
+            "The date and time when the value of any of the
+             admin-state, oper-state, usage-state, alarm-status, or
+             standby-status changed for this entity.
 
-      leaf admin-state {
-        if-feature entity-state;
-        type entity-admin-state;
-        description
-          "The administrative state for this entity.
+             If there has been no change since the last
+             re-initialization of the local system, this node contains
+             the date and time of local system initialization.  If there
+             has been no change since the entity was added to the local
+             system, this node contains the date and time of the
+             insertion.";
+          reference "RFC 4268: entStateLastChanged";
+        }
 
-           This object refers to an entities administrative
-           permission to service both other entities within
-           its containment hierarchy as well other users of
-           its services defined by means outside the scope
-           of this module.
+        leaf admin-state {
+          type entity-admin-state;
+          description
+            "The administrative state for this entity.
 
-           Some physical entities exhibit only a subset of the
-           remaining administrative state values.  Some entities
-           cannot be locked, and hence this object exhibits only
-           the 'unlocked' state.  Other entities cannot be shutdown
-           gracefully, and hence this object does not exhibit the
-           'shuttingDown' state.";
-        reference "RFC 4268, entStateAdmin";
-        // read-write in MIB
-      }
+             This node refers to an entities administrative permission
+             to service both other entities within its containment
+             hierarchy as well other users of its services defined by
+             means outside the scope of this module.
 
-      leaf oper-state {
-        if-feature entity-state;
-        type entity-oper-state;
-        description
-          "The operational state for this entity.
+             Some physical entities exhibit only a subset of the
+             remaining administrative state values.  Some entities
+             cannot be locked, and hence this node exhibits only the
+             'unlocked' state.  Other entities cannot be shutdown
+             gracefully, and hence this node does not exhibit the
+             'shutting-down' state.";
+          reference "RFC 4268: entStateAdmin";
+        }
 
-           Note that this object does not follow
-           the administrative state.  An administrative state of
-           down does not predict an operational state
-           of disabled.
+        leaf oper-state {
+          type entity-oper-state;
+          description
+            "The operational state for this entity.
 
-           Note that some implementations may not be able to
-           accurately report oper-state while the
-           admin-state object has a value other than 'unlocked'.
-           In these cases, this object MUST have a value
-           of 'unknown'.";
-        reference "RFC 4268, entStateOper";
-        // read-only in MIB
-      }
+             Note that this node does not follow the administrative
+             state.  An administrative state of down does not predict an
+             operational state of disabled.
 
-      leaf usage-state {
-        if-feature entity-state;
-        type entity-usage-state;
-        description
-          "The usage state for this entity.
+             Note that some implementations may not be able to
+             accurately report oper-state while the admin-state node
+             has a value other than 'unlocked'.  In these cases, this
+             node MUST have a value of 'unknown'.";
+          reference "RFC 4268: entStateOper";
+        }
 
-           This object refers to an entity's ability to service more
-           physical entities in a containment hierarchy.
+        leaf usage-state {
+          type entity-usage-state;
+          description
+            "The usage state for this entity.
 
-           Some entities will exhibit only a subset of the
-           usage state values.  Entities that are unable to ever
-           service any entities within a containment hierarchy will
-           always have a usage state of 'busy'.  Some entities will
-           only ever be able to support one entity within its
-           containment hierarchy and will therefore only exhibit
-           values of 'idle' and 'busy'.";
-        reference "RFC 4268, entStateUsage";
-        // read-only in MIB
-      }
+             This node refers to an entity's ability to service more
+             physical entities in a containment hierarchy.
 
-      leaf alarm-status {
-        if-feature entity-state;
-        type entity-alarm-status;
-        description
-          "The alarm status for this entity.  It does not include
-           the alarms raised on child components within its
-           containment hierarchy.";
-        reference "RFC 4268, entStateAlarm";
-        // read-only in MIB
-      }
+             Some entities will exhibit only a subset of the usage state
+             values.  Entities that are unable to ever service any
+             entities within a containment hierarchy will always have a
+             usage state of 'busy'.  Some entities will only ever be
+             able to support one entity within its containment hierarchy
+             and will therefore only exhibit values of 'idle' and
+             'busy'.";
+          reference "RFC 4268, entStateUsage";
+        }
 
-      leaf standby-status {
-        if-feature entity-state;
-        type entity-standby-status;
-        description
-          "The standby status for this entity.
+        leaf alarm-status {
+          type entity-alarm-status;
+          description
+            "The alarm status for this entity.  It does not include
+             the alarms raised on child components within its
+             containment hierarchy.";
+          reference "RFC 4268: entStateAlarm";
+        }
 
-           Some entities will exhibit only a subset of the
-           remaining standby state values.  If this entity
-           cannot operate in a standby role, the value of this
-           object will always be 'providing-service'.";
-        reference "RFC 4268, entStateStandby";
-        // read-only in MIB
+        leaf standby-status {
+          type entity-standby-status;
+          description
+            "The standby status for this entity.
+
+             Some entities will exhibit only a subset of the
+             remaining standby state values.  If this entity
+             cannot operate in a standby role, the value of this
+             node will always be 'providing-service'.";
+          reference "RFC 4268: entStateStandby";
+        }
       }
 
       container sensor-data {
-        when 'derived-from(../class, "iana-entity", "sensor")';
+        when 'derived-from-or-self(../class,
+                                   "iana-entity", "sensor")' {
+          description
+            "Sensor data nodes present for any entity of type 'sensor'";
+        }
         if-feature entity-sensor;
+        description
+          "Sensor-related nodes.";
+        reference "RFC 3433: Entity Sensor MIB";
 
         leaf data-type {
           type entity-sensor-data-type;
           description
             "The type of data units associated with the
              sensor value";
-          reference "RFC 3433, entPhySensorType";
-          // read-only in MIB
+          reference "RFC 3433: entPhySensorType";
         }
 
         leaf data-scale {
@@ -1004,8 +934,7 @@ module ietf-entity {
           description
             "The (power of 10) scaling factor associated
              with the sensor value";
-          reference "RFC 3433, entPhySensorScale";
-          // read-only in MIB
+          reference "RFC 3433: entPhySensorScale";
         }
 
         leaf precision {
@@ -1013,61 +942,54 @@ module ietf-entity {
           description
             "The number of decimal places of precision
              associated with the sensor value";
-          reference "RFC 3433, entPhySensorPrecision";
-          // read-only in MIB
+          reference "RFC 3433: entPhySensorPrecision";
         }
 
         leaf value {
           type entity-sensor-value;
           description
-            "The most recent measurement obtained by the agent
+            "The most recent measurement obtained by the server
              for this sensor.";
-          reference "RFC 3433, entPhySensorValue";
-          // read-only in MIB
+          reference "RFC 3433: entPhySensorValue";
         }
 
         leaf oper-status {
           type entity-sensor-status;
           description
             "The operational status of the sensor.";
-          reference "RFC 3433, entPhySensorOperStatus";
-          // read-only in MIB
+          reference "RFC 3433: entPhySensorOperStatus";
         }
 
         leaf sensor-units-display {
           type string;
           description
-            "A textual description of the data units that should be used
-            in the display of the sensor value.";
-          reference "RFC 3433, entPhySensorUnitsDisplay";
-          // read-only in MIB
+            "A textual description of the data units that should be
+             used in the display of the sensor value.";
+          reference "RFC 3433: entPhySensorUnitsDisplay";
         }
 
         leaf value-timestamp {
           type yang:date-and-time;
           description
-            "The value of sysUpTime at the time the status and/or value
-             of this sensor was last obtained by the agent.";
-          reference "RFC 3433, entPhySensorValueTimeStamp";
-          // read-only in MIB
+            "The time the status and/or value of this sensor was
+             last obtained by the server.";
+          reference "RFC 3433: entPhySensorValueTimeStamp";
         }
 
         leaf value-update-rate {
           type uint32;
           units "milliseconds";
           description
-            "An indication of the frequency that the agent updates the
-             associated entPhySensorValue object, representing in
-             milliseconds.
-             The value zero indicates:
+            "An indication of the frequency that the server updates
+             the associated 'value' node, representing in
+             milliseconds.  The value zero indicates:
 
               - the sensor value is updated on demand (e.g.,
-                when polled by the agent for a get-request),
+                when polled by the server for a get-request),
               - the sensor value is updated when the sensor
                 value changes (event-driven),
-              - the agent does not know the update rate.";
-          reference "RFC 3433, entPhySensorValueUpdateRate";
-          // read-only in MIB
+              - the server does not know the update rate.";
+          reference "RFC 3433: entPhySensorValueUpdateRate";
         }
       }
     }
@@ -1079,18 +1001,19 @@ module ietf-entity {
 
   container entity {
     if-feature entity-config;
+    description
+      "Configuration parameters for physical entities.";
 
     list physical-entity {
       key name;
       description
-        "List of configurated data for physical entities.";
+        "List of configuration data for physical entities.";
 
       leaf name {
         type string;
         description
           "Administrative name assigned to this physical entity.
-           No restrictions apply. Not required to be the same
-           as entPhysicalName.";
+           No restrictions apply.";
       }
 
       leaf serial-num {
@@ -1100,29 +1023,8 @@ module ietf-entity {
            entity.  The preferred value is the serial number string
            actually printed on the component itself (if present).
 
-           On the first instantiation of a physical entity, the value
-           of serial-num associated with that entity is set
-           to the correct vendor-assigned serial number, if this
-           information is available to the agent.  If a serial number
-           is unknown or non-existent, the serial-num will be
-           set to a zero-length string instead.
-
-           Note that implementations that can correctly identify the
-           serial numbers of all installed physical entities do not
-           need to provide write access to the serial-num
-           object.  Agents that cannot provide non-volatile storage
-           for the serial-num strings are not required to
-           implement write access for this object.
-
-           If write access is implemented for an instance of
-           serial-num and a value is written into the
-           instance, the agent must retain the supplied value in the
-           serial-num instance (associated with the same
-           physical entity) for as long as that entity remains
-           instantiated.  This includes instantiations across all
-           re-initializations/reboots of the network management system,
-           including those resulting in a change of the physical
-           entity's physical-index value.";
+           This node is indented to be used for physical entities
+           for which the server cannot determine the serial number.";
         reference "RFC 6933: entPhysicalSerialNum";
       }
 
@@ -1131,25 +1033,9 @@ module ietf-entity {
           length "0 .. 32";
         }
         description
-          "This object is an 'alias' name for the physical entity, as
+          "This node is an 'alias' name for the physical entity, as
            specified by a network manager, and provides a non-volatile
-           'handle' for the physical entity.
-
-           On the first instantiation of a physical entity, the value
-           of alias associated with that entity is set to
-           the zero-length string.  However, the agent may set the
-           value to a locally unique default value, instead of a
-           zero-length string.
-
-           If write access is implemented for an instance of
-           alias and a value is written into the instance,
-           the agent must retain the supplied value in the
-           alias instance (associated with the same physical
-           entity) for as long as that entity remains instantiated.
-           This includes instantiations across all
-           re-initializations/reboots of the network management system,
-           including those resulting in a change of the physical
-           entity's physical-index value.";
+           'handle' for the physical entity.";
         reference "RFC 6933: entPhysicalAlias";
       }
 
@@ -1158,35 +1044,16 @@ module ietf-entity {
           length "0 .. 32";
         }
         description
-          "This object is a user-assigned asset tracking identifier
-           (as specified by a network manager) for the physical entity
-           and provides non-volatile storage of this information.
-
-           On the first instantiation of a physical entity, the value
-           of asset-id associated with that entity is set to
-           the zero-length string.
-
-           If write access is implemented for an instance of
-           asset-id and a value is written into the
-           instance, the agent must retain the supplied value in the
-           entPhysicalAssetID instance (associated with the same
-           physical entity) for as long as that entity remains
-           instantiated.  This includes instantiations across all
-           re-initializations/reboots of the network management system,
-           including those resulting in a change of the physical
-           entity's entPhysicalIndex value.
-
-           If no asset tracking information is associated with the
-           physical component, then this object will contain a
-           zero-length string.";
+          "This node is a user-assigned asset tracking identifier
+           (as specified by a network manager) for the physical entity";
         reference "RFC 6933: entPhysicalAssetID";
       }
 
       leaf-list uri {
         type inet:uri;
         description
-          "Each URI is in a separate leaf-list instance instead
-           of a white-space delimited string of URIs";
+          "This node contains identification information about the
+           physical entity.";
         reference "RFC 6933: entPhysicalUris";
       }
 
@@ -1196,31 +1063,20 @@ module ietf-entity {
         description
           "The administrative state for this entity.
 
-           This object refers to an entities administrative
+           This node refers to an entity's administrative
            permission to service both other entities within
            its containment hierarchy as well other users of
            its services defined by means outside the scope
            of this module.
 
-           Setting this object to 'notSupported' will result
-           in an 'inconsistentValue' error.  For entities that
-           do not support administrative state, all set
-           operations will result in an 'inconsistentValue'
-           error.
-
            Some physical entities exhibit only a subset of the
            remaining administrative state values.  Some entities
-           cannot be locked, and hence this object exhibits only
+           cannot be locked, and hence this node exhibits only
            the 'unlocked' state.  Other entities cannot be shutdown
-           gracefully, and hence this object does not exhibit the
-           'shuttingDown' state.  A value of 'inconsistentValue'
-           will be returned if attempts are made to set this
-           object to values not supported by its administrative
-           model.";
+           gracefully, and hence this node does not exhibit the
+           'shutting-down' state.";
         reference "RFC 4268, entStateAdmin";
-        // read-write in MIB
       }
-
     }
   }
 
@@ -1229,45 +1085,70 @@ module ietf-entity {
    */
 
   notification ent-config-change {
+    description
+      "An ent-config-change notification is generated when the value
+       of /entity-state/last-change changes.";
     reference "RFC 6933, entConfigChange";
   }
 
   notification ent-state-oper-enabled {
     if-feature entity-state;
+    description
+      "An ent-state-oper-enabled notification signifies that
+       an entity has transitioned into the 'enabled' state.";
+
     leaf name {
       type leafref {
         path "/entity-state/physical-entity/name";
       }
+      description
+        "The name of the entity that has transitioned into the
+         'enabled' state.";
     }
     leaf admin-state {
       type leafref {
-        path "/entity-state/physical-entity/admin-state";
+        path "/entity-state/physical-entity/state/admin-state";
       }
+      description
+        "The administrative state for the entity.";
     }
     leaf alarm-status {
       type leafref {
-        path "/entity-state/physical-entity/alarm-status";
+        path "/entity-state/physical-entity/state/alarm-status";
       }
+      description
+        "The alarm status for the entity.";
     }
     reference "RFC 4268, entStateOperEnabled";
   }
 
   notification ent-state-oper-disabled {
     if-feature entity-state;
+    description
+      "An ent-state-oper-disabled notification signifies that
+       an entity has transitioned into the 'disabled' state.";
+
     leaf name {
       type leafref {
         path "/entity-state/physical-entity/name";
       }
+      description
+        "The name of the entity that has transitioned into the
+         'disabled' state.";
     }
     leaf admin-state {
       type leafref {
-        path "/entity-state/physical-entity/admin-state";
+        path "/entity-state/physical-entity/state/admin-state";
       }
+      description
+        "The administrative state for the entity.";
     }
     leaf alarm-status {
       type leafref {
-        path "/entity-state/physical-entity/alarm-status";
+        path "/entity-state/physical-entity/state/alarm-status";
       }
+      description
+        "The alarm status for the entity.";
     }
     reference "RFC 4268, entStateOperDisabled";
   }
