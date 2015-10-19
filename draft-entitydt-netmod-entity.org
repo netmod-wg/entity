@@ -237,6 +237,6 @@ TBD
     abbreviation "YANG Entity Management";
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
-    contributoe "author:Jie Dong:Huawei Technologies:jie.dong@huawei.com";
+    contributor "author:Jie Dong:Huawei Technologies:jie.dong@huawei.com";
     contributor "author:Dan Romascanu:Avaya:dromasca@avaya.com";
 }}
