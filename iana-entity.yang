@@ -32,7 +32,7 @@ module iana-entity {
     description
       "Initial revision.";
     reference
-      "RFC XXXX: A YANG Data Model for Entity Managemet";
+      "RFC XXXX: A YANG Data Model for Entity Management";
   }
 
   identity unknown {

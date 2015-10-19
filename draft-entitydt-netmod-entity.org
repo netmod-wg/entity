@@ -233,7 +233,7 @@ TBD
     ipr trust200902;
     category std;
     references entity-back.xml;
-    title "A YANG Data Model for Entity Managemet";
+    title "A YANG Data Model for Entity Management";
     abbreviation "YANG Entity Management";
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
