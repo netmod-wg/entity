@@ -5,8 +5,9 @@ physical entities managed by a single server.
 
 * Introduction
 
-This document defines a YANG data model for the management of multiple
-physical entities managed by a single server.
+This document defines a YANG ^I-D.ietf-netmod-rfc6020bis^ data model
+for the management of multiple physical entities managed by a single
+server.
 
 The data model includes configuration data and state data (status
 information and counters for the collection of statistics).
@@ -194,7 +195,7 @@ TBD relationship to ^RFC4268^.
 
 * Entity YANG Module
 
-!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-05-15.yang"
+!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-05-13.yang"
 
 Move this to a separate document?:
 
