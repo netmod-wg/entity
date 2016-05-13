@@ -28,7 +28,7 @@ module iana-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2015-10-19 {
+  revision 2016-05-13 {
     description
       "Initial revision.";
     reference

@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+#
+# Usage mk-back <file>
+#
+# Use to create a references section in a back file w/ oxtradoc.
+#
+# Substitutes any line on the form:
+#   ietf-ref:RFCXXXX
+#   ietf-ref:I-D.xxx...
+# with the corresponding xml2rfc XML reference element.
+
+my $host = "xml2rfc.ietf.org";
+my $path = "public/rfc";
+
+my $filename = shift @ARGV;
+open(my $fh, $filename);
+
+while ( $line = $fh->getline() ) {
+    my $file = "";
+    if ( $line =~ /ietf-ref:RFC(.*)/ ) {
+        $file = "bibxml/reference.RFC." . $1 . ".xml";
+    } elsif ( $line =~ /ietf-ref:(I-D.*)/ ) {
+        $file = "bibxml3/reference." . $1 . ".xml";
+    }
+    if ( $file eq "" ) {
+        print $line;
+    } else {
+        my $res = `curl -s http://$host/$path/$file \\
+                   | xmllint --format - \\
+                   | grep -v '\?xml'`;
+        print $res;
+    }
+}

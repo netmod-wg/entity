@@ -26,7 +26,9 @@ next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif
 next := $(draft)-$(next_ver)
 
-.PHONY: latest submit clean
+yang := $(wildcard *.yang)
+
+.PHONY: latest submit clean validate
 
 submit: $(next).txt
 
@@ -36,7 +38,7 @@ idnits: $(next).txt
 	$(idnits) $<
 
 clean:
-	-rm -f $(draft).txt $(draft).html index.html
+	-rm -f $(draft).txt $(draft).html index.html back.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
 ifeq (.md,$(draft_type))
@@ -46,10 +48,16 @@ ifeq (.org,$(draft_type))
 	-rm -f $(draft).xml
 endif
 
-$(next).xml: ietf-entity.yang iana-entity.yang entity-back.xml
+validate:
+	pyang --ietf $(yang)
+
+back.xml: back.xml.src
+	./mk-back $< > $@
 
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
+
+$(draft).xml: back.xml $(yang)
 
 .INTERMEDIATE: $(draft).xml
 %.xml: %.md

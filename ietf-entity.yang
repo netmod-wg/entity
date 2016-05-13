@@ -17,8 +17,8 @@ module ietf-entity {
     "WG Web:   <http://tools.ietf.org/wg/netmod/>
      WG List:  <mailto:netmod@ietf.org>
 
-     WG Chair: Thomas Nadeau
-               <mailto:tnadeau@lucidvision.com>
+     WG Chair: Lou Berger
+               <mailto:lberger@labn.net>
 
      WG Chair: Juergen Schoenwaelder
                <mailto:j.schoenwaelder@jacobs-university.de>
@@ -32,7 +32,11 @@ module ietf-entity {
      Editor:   Martin Bjorklund
                <mailto:mbj@tail-f.com>
 
-     Editor:   ";
+     Editor:   Jie Dong
+               <mailto:jie.dong@huawei.com>
+
+     Editor:   Dan Romascanu
+               <mailto:dromasca@avaya.com>";
 
   // RFC Ed.: replace XXXX with actual RFC number and remove this
   // note.
@@ -41,7 +45,7 @@ module ietf-entity {
     "This module contains a collection of YANG definitions for
      managing physical entities.
 
-     Copyright (c) 2015 IETF Trust and the persons identified as
+     Copyright (c) 2016 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
 
      Redistribution and use in source and binary forms, with or
@@ -56,7 +60,7 @@ module ietf-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2015-10-19 {
+  revision 2016-05-13 {
     description
       "Initial revision.";
     reference
@@ -346,8 +350,9 @@ module ietf-entity {
 
        An node of this type SHOULD be defined together with nodes
        of type entity-sensor-data-scale and
-       entity-sensor-precision. These three types are used to identify
-       the semantics of an node of type entity-sensor-value.";
+       entity-sensor-precision. These three types are used to
+       identify the semantics of an node of type
+       entity-sensor-value.";
     reference "RFC 3433: EntitySensorDataType";
   }
 
@@ -517,8 +522,8 @@ module ietf-entity {
       contain a fixed point number ranging from -999,999,999 to
       +999,999,999.  The value -1000000000 indicates an underflow
       error. The value +1000000000 indicates an overflow error.  The
-      entity-sensor-precision indicates how many fractional digits are
-      represented in the associated entity-sensor-value node.
+      entity-sensor-precision indicates how many fractional digits
+      are represented in the associated entity-sensor-value node.
 
       If the associated entity-sensor-data-type node is equal to
       'percentRH', then an node of this type MUST contain a
@@ -828,10 +833,10 @@ module ietf-entity {
 
              If there has been no change since the last
              re-initialization of the local system, this node contains
-             the date and time of local system initialization.  If there
-             has been no change since the entity was added to the local
-             system, this node contains the date and time of the
-             insertion.";
+             the date and time of local system initialization.  If
+             there has been no change since the entity was added to
+             the local system, this node contains the date and time of
+             the insertion.";
           reference "RFC 4268: entStateLastChanged";
         }
 
@@ -860,8 +865,8 @@ module ietf-entity {
             "The operational state for this entity.
 
              Note that this node does not follow the administrative
-             state.  An administrative state of down does not predict an
-             operational state of disabled.
+             state.  An administrative state of down does not predict
+             an operational state of disabled.
 
              Note that some implementations may not be able to
              accurately report oper-state while the admin-state node
@@ -878,13 +883,13 @@ module ietf-entity {
              This node refers to an entity's ability to service more
              physical entities in a containment hierarchy.
 
-             Some entities will exhibit only a subset of the usage state
-             values.  Entities that are unable to ever service any
-             entities within a containment hierarchy will always have a
-             usage state of 'busy'.  Some entities will only ever be
-             able to support one entity within its containment hierarchy
-             and will therefore only exhibit values of 'idle' and
-             'busy'.";
+             Some entities will exhibit only a subset of the usage
+             state values.  Entities that are unable to ever service
+             any entities within a containment hierarchy will always
+             have a usage state of 'busy'.  Some entities will only
+             ever be able to support one entity within its containment
+             hierarchy and will therefore only exhibit values of
+             'idle' and 'busy'.";
           reference "RFC 4268, entStateUsage";
         }
 
@@ -914,7 +919,8 @@ module ietf-entity {
         when 'derived-from-or-self(../class,
                                    "iana-entity", "sensor")' {
           description
-            "Sensor data nodes present for any entity of type 'sensor'";
+            "Sensor data nodes present for any entity of type
+             'sensor'";
         }
         if-feature entity-sensor;
         description
@@ -1045,7 +1051,8 @@ module ietf-entity {
         }
         description
           "This node is a user-assigned asset tracking identifier
-           (as specified by a network manager) for the physical entity";
+           (as specified by a network manager) for the physical
+           entity";
         reference "RFC 6933: entPhysicalAssetID";
       }
 

@@ -194,11 +194,11 @@ TBD relationship to ^RFC4268^.
 
 * Entity YANG Module
 
-!! include-figure ietf-entity.yang extract-to="ietf-entity@2015-10-19.yang"
+!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-05-15.yang"
 
 Move this to a separate document?:
 
-!! include-figure iana-entity.yang extract-to="iana-entity@2015-10-19.yang"
+!! include-figure iana-entity.yang extract-to="iana-entity@2016-05-13.yang"
 
 * IANA Considerations @iana@
 
@@ -232,7 +232,7 @@ TBD
     name ;
     ipr trust200902;
     category std;
-    references entity-back.xml;
+    references back.xml;
     title "A YANG Data Model for Entity Management";
     abbreviation "YANG Entity Management";
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
