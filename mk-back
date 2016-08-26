@@ -37,7 +37,7 @@ while ( $line = $fh->getline() ) {
         print $line;
     } else {
         my $url = "https://" . $host . "/" . $path . "/" . $file;
-        my $res = `curl -f -s $url \\
+        my $res = `curl -L -f -s $url \\
                    | xmllint --format - \\
                    | grep -v '\?xml'`;
         if ($? != 0) {
