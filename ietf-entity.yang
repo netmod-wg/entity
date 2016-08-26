@@ -9,6 +9,9 @@ module ietf-entity {
   import ietf-yang-types {
     prefix yang;
   }
+  import iana-entity {
+    prefix ianaent;
+  }
 
   organization
     "IETF NETMOD (NETCONF Data Modeling Language) Working Group";
@@ -60,7 +63,7 @@ module ietf-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-05-13 {
+  revision 2016-08-26 {
     description
       "Initial revision.";
     reference
@@ -572,17 +575,6 @@ module ietf-entity {
   }
 
   /*
-   * Identities
-   */
-
-  identity entity-physical-class {
-    description
-      "This identity is the base for all physical entity class
-       identifiers.";
-  }
-
-
-  /*
    * Operational state data nodes
    */
 
@@ -613,7 +605,7 @@ module ietf-entity {
 
       leaf class {
         type identityref {
-          base entity-physical-class;
+          base ianaent:entity-physical-class;
         }
         mandatory true;
         description
@@ -917,7 +909,7 @@ module ietf-entity {
 
       container sensor-data {
         when 'derived-from-or-self(../class,
-                                   "iana-entity", "sensor")' {
+                                   "ianaent:sensor")' {
           description
             "Sensor data nodes present for any entity of type
              'sensor'";

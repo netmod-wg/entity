@@ -2,10 +2,6 @@ module iana-entity {
   namespace "urn:ietf:params:xml:ns:yang:iana-entity";
   prefix ianaent;
 
-  import ietf-entity {
-    prefix ent;
-  }
-
   organization "IANA";
   contact
     "        Internet Assigned Numbers Authority
@@ -28,22 +24,33 @@ module iana-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-05-13 {
+  revision 2016-08-26 {
     description
       "Initial revision.";
     reference
       "RFC XXXX: A YANG Data Model for Entity Management";
   }
 
+  /*
+   * Identities
+   */
+
+  identity entity-physical-class {
+    description
+      "This identity is the base for all physical entity class
+       identifiers.";
+  }
+
+
   identity unknown {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is unknown to the server.";
   }
 
   identity chassis {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is an overall container for networking equipment.  Any class of
@@ -52,7 +59,7 @@ module iana-entity {
   }
 
   identity backplane {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of device for aggregating and forwarding
@@ -64,7 +71,7 @@ module iana-entity {
   }
 
   identity container {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is capable of containing one or more removable physical
@@ -78,21 +85,21 @@ module iana-entity {
   }
 
   identity power-supply {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is a power-supplying component.";
   }
 
   identity fan {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is a fan or other heat-reduction component.";
   }
 
   identity sensor {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of sensor, such as a temperature sensor within a
@@ -100,7 +107,7 @@ module iana-entity {
   }
 
   identity module {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of self-contained sub-system.  If a 'module'
@@ -111,7 +118,7 @@ module iana-entity {
   }
 
   identity port {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of networking port, capable of receiving and/or
@@ -119,7 +126,7 @@ module iana-entity {
   }
 
   identity stack {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of super-container (possibly virtual) intended to
@@ -132,14 +139,14 @@ module iana-entity {
   }
 
   identity cpu {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of central processing unit.";
   }
 
   identity energy-object {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of energy object, i.e., a piece of equipment that
@@ -149,14 +156,14 @@ module iana-entity {
   }
 
   identity battery {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of battery.";
   }
 
   identity storage-drive {
-    base ent:entity-physical-class;
+    base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
        is some sort of entity with data storage capability as main

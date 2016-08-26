@@ -8,8 +8,11 @@ xml2rfc ?= xml2rfc
 kramdown-rfc2629 ?= kramdown-rfc2629
 oxtradoc ?= oxtradoc
 idnits ?= idnits
+pyang ?= pyang
 
 draft := $(basename $(lastword $(sort $(wildcard draft-*.xml)) $(sort $(wildcard draft-*.md)) $(sort $(wildcard draft-*.org)) ))
+
+trees = ietf-entity.tree
 
 ifeq (,$(draft))
 $(warning No file named draft-*.md or draft-*.xml or draft-*.org)
@@ -57,7 +60,7 @@ back.xml: back.xml.src
 $(next).xml: $(draft).xml
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
 
-$(draft).xml: back.xml $(yang)
+$(draft).xml: back.xml $(trees) $(examples) $(yang)
 
 .INTERMEDIATE: $(draft).xml
 %.xml: %.md
@@ -68,6 +71,13 @@ $(draft).xml: back.xml $(yang)
 
 %.txt: %.xml
 	$(xml2rfc) $< -o $@ --text
+
+ietf-entity.tree: ietf-entity.yang
+	$(pyang) -f tree $< | \
+		sed -e 's;-> /entity-state/physical-entity/;-> /entity-state/physical-entity\n                                /;g' > $@
+
+%.tree: %.yang
+	$(pyang) -f tree $< > $@
 
 ifeq "$(shell uname -s 2>/dev/null)" "Darwin"
 sed_i := sed -i ''

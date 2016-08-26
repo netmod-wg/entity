@@ -55,70 +55,7 @@ model.
 This document defines the YANG module "ietf-entity", which has the
 following structure:
 
-  module: ietf-entity
-     +--ro entity-state
-     |  +--ro last-change?       yang:date-and-time
-     |  +--ro physical-entity* [name]
-     |     +--ro name                  string
-     |     +--ro class?                identityref
-     |     +--ro physical-index?       int32 {entity-mib}?
-     |     +--ro description?          string
-     |     +--ro contained-in*         -> ../../physical-entity/name
-     |     +--ro contains-child*       -> ../../physical-entity/name
-     |     +--ro parent-rel-pos?       int32
-     |     +--ro hardware-rev?         string
-     |     +--ro firmware-rev?         string
-     |     +--ro software-rev?         string
-     |     +--ro serial-num?           string
-     |     +--ro mfg-name?             string
-     |     +--ro model-name?           string
-     |     +--ro alias?                string
-     |     +--ro asset-id?             string
-     |     +--ro is-fru?               boolean
-     |     +--ro mfg-date?             yang:date-and-time
-     |     +--ro uri*                  inet:uri
-     |     +--ro uuid?                 yang:uuid
-     |     +--ro state {entity-state}?
-     |     |  +--ro state-last-changed?     yang:date-and-time
-     |     |  +--ro admin-state?            entity-admin-state
-     |     |  +--ro oper-state?             entity-oper-state
-     |     |  +--ro usage-state?            entity-usage-state
-     |     |  +--ro alarm-status?           entity-alarm-status
-     |     |  +--ro standby-status?         entity-standby-status
-     |     +--ro sensor-data {entity-sensor}?
-     |        +--ro data-type?              entity-sensor-data-type
-     |        +--ro data-scale?             entity-sensor-data-scale
-     |        +--ro precision?              entity-sensor-precision
-     |        +--ro value?                  entity-sensor-value
-     |        +--ro oper-status?            entity-sensor-status
-     |        +--ro sensor-units-display?   string
-     |        +--ro value-timestamp?        yang:date-and-time
-     |        +--ro value-update-rate?      uint32
-     +--rw entity {entity-config}?
-        +--rw physical-entity* [name]
-           +--rw name           string
-           +--rw serial-num?    string
-           +--rw alias?         string
-           +--rw asset-id?      string
-           +--rw uri*           inet:uri
-           +--rw admin-state?   entity-admin-state {entity-state}?
-
-  notifications:
-     +---n ent-config-change
-     +---n ent-state-oper-enabled {entity-state}?
-     |  +--ro name?           -> /entity-state/physical-entity
-                                 /name
-     |  +--ro admin-state?    -> /entity-state/physical-entity
-                                 /state/admin-state
-     |  +--ro alarm-status?   -> /entity-state/physical-entity
-                                 /state/alarm-status
-     +---n ent-state-oper-disabled {entity-state}?
-        +--ro name?           -> /entity-state/physical-entity
-                                 /name
-        +--ro admin-state?    -> /entity-state/physical-entity
-                                 /state/admin-state
-        +--ro alarm-status?   -> /entity-state/physical-entity
-                                 /state/alarm-status
+!! include-figure ietf-entity.tree
 
 ** The Physical Entry Lists
 
@@ -195,11 +132,11 @@ TBD relationship to ^RFC4268^.
 
 * Entity YANG Module
 
-!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-05-13.yang"
+!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-08-26.yang"
 
 Move this to a separate document?:
 
-!! include-figure iana-entity.yang extract-to="iana-entity@2016-05-13.yang"
+!! include-figure iana-entity.yang extract-to="iana-entity@2016-08-26.yang"
 
 * IANA Considerations @iana@
 
