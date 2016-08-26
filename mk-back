@@ -5,11 +5,12 @@
 # Use to create a references section in a back file w/ oxtradoc.
 #
 # Substitutes any line on the form:
-#   ietf-ref:RFCXXXX
-#   ietf-ref:I-D.xxx...
+#   ietf-ref[:<alias>]:RFCXXXX
+#   ietf-ref[:<alias>]:I-D.xxx...
+#   w3c-ref[:<alias>]:W3C.xxx...
 # with the corresponding xml2rfc XML reference element.
 
-my $host = "xml2rfc.ietf.org";
+my $host = "xml2rfc.tools.ietf.org";
 my $path = "public/rfc";
 
 my $filename = shift @ARGV;
@@ -17,17 +18,37 @@ open(my $fh, $filename);
 
 while ( $line = $fh->getline() ) {
     my $file = "";
-    if ( $line =~ /ietf-ref:RFC(.*)/ ) {
-        $file = "bibxml/reference.RFC." . $1 . ".xml";
-    } elsif ( $line =~ /ietf-ref:(I-D.*)/ ) {
-        $file = "bibxml3/reference." . $1 . ".xml";
+    my $alias = "";
+    my $name = "";
+    if ( $line =~ /ietf-ref(:(.*))?:RFC(.*)/ ) {
+        $alias = $2;
+        $name = $3;
+        $file = "bibxml/reference.RFC." . $name . ".xml";
+    } elsif ( $line =~ /ietf-ref(:(.*))?:(I-D.*)/ ) {
+        $alias = $2;
+        $name = $3;
+        $file = "bibxml3/reference." . $name . ".xml";
+    } elsif ( $line =~ /w3c-ref(:(.*))?:(.*)/ ) {
+        $alias = $2;
+        $name = $3;
+        $file = "bibxml4/reference." . $name . ".xml";
     }
     if ( $file eq "" ) {
         print $line;
     } else {
-        my $res = `curl -s http://$host/$path/$file \\
+        my $url = "https://" . $host . "/" . $path . "/" . $file;
+        my $res = `curl -f -s $url \\
                    | xmllint --format - \\
                    | grep -v '\?xml'`;
+        if ($? != 0) {
+            print STDERR "Failed to get " . $url . "\n";
+            exit(1);
+        }
+        if ( $alias ne "")  {
+            my $anchor1 = "anchor=\"" . $name . "\"";
+            my $anchor2 = "anchor=\"" . $alias . "\"";
+            $res =~ s/$anchor1/$anchor2/;
+        }
         print $res;
     }
 }
