@@ -53,8 +53,8 @@ module iana-entity {
     base ianaent:entity-physical-class;
     description
       "This identity is applicable if the physical entity class
-       is an overall container for networking equipment.  Any class of
-       physical entity, except a stack, may be contained within a
+       is an overall container for networking equipment.  Any class
+       of physical entity, except a stack, may be contained within a
        chassis; a chassis may only be contained within a stack.";
   }
 
@@ -77,11 +77,11 @@ module iana-entity {
        is capable of containing one or more removable physical
        entities, possibly of different types.  For example, each
        (empty or full) slot in a chassis will be modeled as a
-       container.  Note that all removable physical entities should be
-       modeled within a container entity, such as field-replaceable
-       modules, fans, or power supplies.  Note that all known
-       containers should be modeled by the agent, including empty
-       containers.";
+       container.  Note that all removable physical entities should
+       be modeled within a container entity, such as field-
+       replaceable modules, fans, or power supplies.  Note that all
+       known containers should be modeled by the agent, including
+       empty containers.";
   }
 
   identity power-supply {

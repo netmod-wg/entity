@@ -1,13 +1,12 @@
 # -*- org -*-
 
-This document defines a YANG data model for the management of multiple
-physical entities managed by a single server.
+This document defines a YANG data model for the management of hardware
+on a single server.
 
 * Introduction
 
 This document defines a YANG ^I-D.ietf-netmod-rfc6020bis^ data model
-for the management of multiple physical entities managed by a single
-server.
+for the management of hardware on a single server.
 
 The data model includes configuration data and state data (status
 information and counters for the collection of statistics).
@@ -36,28 +35,28 @@ marked with a colon (":").
 
 * Objectives
 
-This section describes some of the design objectives for the entity
+This section describes some of the design objectives for the hardware
 model.
 
-- There are many common properties used to identify the entities,
-  which need to be supported in the entity data module.
+- There are many common properties used to identify physical entities,
+  which need to be supported in the hardware data module.
 - There are many important information and states about the
-  entities, which needs to be collected from the devices which
-  support the entity data model.
-- The entity data model SHOULD be suitable for new implementations
+  physical entities, which needs to be collected from the devices which
+  support the hardware data model.
+- The hardware data model SHOULD be suitable for new implementations
   to use as is.
-- The entity data model defined in this document can be implemented
+- The hardware data model defined in this document can be implemented
   on a system that also implements ENTITY-MIB, thus the mapping
-  between the entity data model and ENTITY-MIB SHOULD be clear.
+  between the hardware data model and ENTITY-MIB SHOULD be clear.
 
-* Entity Data Model
+* Hardware Data Model
 
-This document defines the YANG module "ietf-entity", which has the
+This document defines the YANG module "ietf-hardware", which has the
 following structure:
 
-!! include-figure ietf-entity.tree
+!! include-figure ietf-hardware.tree
 
-** The Physical Entry Lists
+** The Physical Entity Lists
 
 The data model for physical entities presented in this document uses a
 flat list of entities.  Each entity in the list is identified by its
@@ -72,15 +71,15 @@ common IANA-defined identities, or derive a more specific identity
 from one of them.
 
 There is one optional list of configured physical entities
-("/entity/physical-entity"), and a separate list for the operational
-state of all physical entities ("/entity-state/physical-entity").
+("/hardware/physical-entity"), and a separate list for the operational
+state of all physical entities ("/hardware-state/physical-entity").
 
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
-/entity-state/physical-entity list is mapped to one EntPhysicalEntry.
+/hardware-state/physical-entity list is mapped to one EntPhysicalEntry.
 Objects that are writable in the MIB are mapped to nodes in the
-/entity/physical-entity list.
+/hardware/physical-entity list.
 
 The "physical-index" leaf MUST contain the value of the corresponding
 entPhysicalEntry's entPhysicalIndex.
@@ -130,9 +129,9 @@ TBD relationship to ^RFC3433^.
 
 TBD relationship to ^RFC4268^.
 
-* Entity YANG Module
+* Hardware YANG Module
 
-!! include-figure ietf-entity.yang extract-to="ietf-entity@2016-08-26.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2016-10-21.yang"
 
 Move this to a separate document?:
 
@@ -171,7 +170,7 @@ TBD
     ipr trust200902;
     category std;
     references back.xml;
-    title "A YANG Data Model for Entity Management";
+    title "A YANG Data Model for Hardware Management";
     abbreviation "YANG Entity Management";
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";

@@ -1,7 +1,7 @@
-module ietf-entity {
+module ietf-hardware {
   yang-version 1.1;
-  namespace "urn:ietf:params:xml:ns:yang:ietf-entity";
-  prefix ent;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-hardware";
+  prefix hw;
 
   import ietf-inet-types {
     prefix inet;
@@ -23,9 +23,6 @@ module ietf-entity {
      WG Chair: Lou Berger
                <mailto:lberger@labn.net>
 
-     WG Chair: Juergen Schoenwaelder
-               <mailto:j.schoenwaelder@jacobs-university.de>
-
      WG Chair: Kent Watsen
                <mailto:kwatsen@juniper.net>
 
@@ -46,7 +43,7 @@ module ietf-entity {
 
   description
     "This module contains a collection of YANG definitions for
-     managing physical entities.
+     managing hardware.
 
      Copyright (c) 2016 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
@@ -63,11 +60,11 @@ module ietf-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-08-26 {
+  revision 2016-10-21 {
     description
       "Initial revision.";
     reference
-      "RFC XXXX: A YANG Data Model for Entity Management";
+      "RFC XXXX: A YANG Data Model for Hardware Management";
   }
 
   /*
@@ -81,7 +78,7 @@ module ietf-entity {
     reference "RFC 6933: Entity MIB (Version 4)";
   }
 
-  feature entity-config {
+  feature hardware-config {
     description
       "Indicates that the server supports configuration of
        physical entities.";
@@ -103,7 +100,7 @@ module ietf-entity {
    * Typedefs
    */
 
-  typedef entity-admin-state {
+  typedef admin-state {
     type enumeration {
       enum unknown {
         value 1;
@@ -124,7 +121,8 @@ module ietf-entity {
       enum unlocked {
         value 4;
         description
-          "The resource is not administratively prohibited from use.";
+          "The resource is not administratively prohibited from
+           use.";
       }
     }
     description
@@ -132,7 +130,7 @@ module ietf-entity {
     reference "RFC 4268: EntityAdminState";
   }
 
-  typedef entity-oper-state {
+  typedef oper-state {
     type enumeration {
       enum unknown {
         value 1;
@@ -161,7 +159,7 @@ module ietf-entity {
     reference "RFC 4268: EntityOperState";
   }
 
-  typedef entity-usage-state {
+  typedef usage-state {
     type enumeration {
       enum unknown {
         value 1;
@@ -191,7 +189,7 @@ module ietf-entity {
     reference "RFC 4268, EntityUsageState";
   }
 
-  typedef entity-alarm-status {
+  typedef alarm-status {
     type bits {
       bit unknown {
         position 0;
@@ -214,18 +212,20 @@ module ietf-entity {
       bit major {
         position 3;
         description
-          "One or more major alarms are active against the resource.";
+          "One or more major alarms are active against the
+           resource.";
       }
       bit minor {
         position 4;
         description
-          "One or more minor alarms are active against the resource.";
+          "One or more minor alarms are active against the
+           resource.";
       }
       bit warning {
         position 5;
         description
-          "One or more warning alarms are active against the resource.
-           This alarm status is not defined in X.733.";
+          "One or more warning alarms are active against the
+           resource. This alarm status is not defined in X.733.";
       }
       bit indeterminate {
         position 6;
@@ -246,7 +246,7 @@ module ietf-entity {
     reference "RFC 4268: EntityAlarmStatus";
   }
 
-  typedef entity-standby-status {
+  typedef standby-status {
     type enumeration {
       enum unknown {
         value 1;
@@ -281,7 +281,7 @@ module ietf-entity {
     reference "RFC 4268: EntityStandbyStatus";
   }
 
-  typedef entity-sensor-data-type {
+  typedef sensor-data-type {
     type enumeration {
       enum other {
         value 1;
@@ -349,17 +349,17 @@ module ietf-entity {
        measurement data type associated with a physical sensor
        value. The actual data units are determined by examining an
        node of this type together with the associated
-       entity-sensor-data-scale node.
+       sensor-data-scale node.
 
        An node of this type SHOULD be defined together with nodes
-       of type entity-sensor-data-scale and
-       entity-sensor-precision. These three types are used to
+       of type sensor-data-scale and
+       sensor-precision. These three types are used to
        identify the semantics of an node of type
-       entity-sensor-value.";
+       sensor-value.";
     reference "RFC 3433: EntitySensorDataType";
   }
 
-  typedef entity-sensor-data-scale {
+  typedef sensor-data-scale {
     type enumeration {
       enum yocto {
         value 1;
@@ -452,17 +452,17 @@ module ietf-entity {
        factor, represented with an International System of Units (SI)
        prefix.  The actual data units are determined by examining an
        node of this type together with the associated
-       entity-sensor-data-type.
+       sensor-data-type.
 
        An node of this type SHOULD be defined together with nodes
-       of type entity-sensor-data-type and entity-sensor-precision.
+       of type sensor-data-type and sensor-precision.
        Together, associated nodes of these three types are used to
        identify the semantics of an node of type
-       entity-sensor-value.";
+       sensor-value.";
     reference "RFC 3433: EntitySensorDataScale";
   }
 
-  typedef entity-sensor-precision {
+  typedef sensor-precision {
     type int32 {
       range "-8 .. 9";
     }
@@ -471,38 +471,39 @@ module ietf-entity {
        precision range.
 
        An node of this type SHOULD be defined together with nodes
-       of type entity-sensor-data-type and entity-sensor-data-scale.
+       of type sensor-data-type and sensor-data-scale.
        Together, associated nodes of these three types are used to
        identify the semantics of an node of type
-       entity-sensor-value.
+       sensor-value.
 
        If an node of this type contains a value in the range 1 to 9,
        it represents the number of decimal places in the fractional
-       part of an associated entity-sensor-value fixed- point number.
+       part of an associated sensor-value fixed- point number.
 
        If an node of this type contains a value in the range -8 to
        -1, it represents the number of accurate digits in the
-       associated entity-sensor-value fixed-point number.
+       associated sensor-value fixed-point number.
 
-       The value zero indicates the associated entity-sensor-value
+       The value zero indicates the associated sensor-value
        node is not a fixed-point number.
 
        Server implementors must choose a value for the associated
-       entity-sensor-precision node so that the precision and
-       accuracy of the associated entity-sensor-value node is
+       sensor-precision node so that the precision and
+       accuracy of the associated sensor-value node is
        correctly indicated.
 
        For example, a physical entity representing a temperature
        sensor that can measure 0 degrees to 100 degrees C in 0.1
        degree increments, +/- 0.05 degrees, would have an
-       entity-sensor-precision value of '1', an
-       entity-sensor-data-scale value of 'units', and an
-       entity-sensor-value ranging from '0' to '1000'.  The
-       entity-sensor-value would be interpreted as 'degrees C * 10'.";
+       sensor-precision value of '1', an
+       sensor-data-scale value of 'units', and an
+       sensor-value ranging from '0' to '1000'.  The
+       sensor-value would be interpreted as
+       'degrees C * 10'.";
     reference "RFC 3433: EntitySensorPrecision";
   }
 
-  typedef entity-sensor-value {
+  typedef sensor-value {
     type int32 {
       range "-1000000000 .. 1000000000";
     }
@@ -511,42 +512,42 @@ module ietf-entity {
       value.
 
       An node of this type SHOULD be defined together with nodes
-      of type entity-sensor-data-type, entity-sensor-data-scale, and
-      entity-sensor-precision.  Together, associated nodes of those
+      of type sensor-data-type, sensor-data-scale, and
+      sensor-precision.  Together, associated nodes of those
       three types are used to identify the semantics of an node of
       this data type.
 
       The semantics of an node using this data type are determined
-      by the value of the associated entity-sensor-data-type node.
+      by the value of the associated sensor-data-type node.
 
-      If the associated entity-sensor-data-type node is equal to
+      If the associated sensor-data-type node is equal to
       'voltsAC', 'voltsDC', 'amperes', 'watts', 'hertz',
       'celsius', or 'cmm', then an node of this type MUST
       contain a fixed point number ranging from -999,999,999 to
       +999,999,999.  The value -1000000000 indicates an underflow
       error. The value +1000000000 indicates an overflow error.  The
-      entity-sensor-precision indicates how many fractional digits
-      are represented in the associated entity-sensor-value node.
+      sensor-precision indicates how many fractional digits
+      are represented in the associated sensor-value node.
 
-      If the associated entity-sensor-data-type node is equal to
+      If the associated sensor-data-type node is equal to
       'percentRH', then an node of this type MUST contain a
       number ranging from 0 to 100.
 
-      If the associated entity-sensor-data-type node is equal to
+      If the associated sensor-data-type node is equal to
       'rpm', then an node of this type MUST contain a number
       ranging from -999,999,999 to +999,999,999.
 
-      If the associated entity-sensor-data-type node is equal to
+      If the associated sensor-data-type node is equal to
       'truthvalue', then an node of this type MUST contain
       either the value 1 (true) or the value 2 (false)'.
 
-      If the associated entity-sensor-data-type node is equal to
+      If the associated sensor-data-type node is equal to
       'other' or unknown', then an node of this type MUST
       contain a number ranging from -1000000000 to 1000000000.";
     reference "RFC 3433: EntitySensorValue";
   }
 
-  typedef entity-sensor-status {
+  typedef sensor-status {
     type enumeration {
       enum ok {
         value 1;
@@ -578,7 +579,7 @@ module ietf-entity {
    * Operational state data nodes
    */
 
-  container entity-state {
+  container hardware-state {
     config false;
     description
       "Data nodes for the operational state of physical entities.";
@@ -586,13 +587,14 @@ module ietf-entity {
     leaf last-change {
       type yang:date-and-time;
       description
-        "The time the '/entity-state/physical-entity' list changed.";
+        "The time the '/hardware-state/physical-entity' list
+         changed.";
     }
 
     list physical-entity {
       key name;
       description
-        "List of physical entities";
+        "List of physical entities.";
       reference "RFC 6933: entPhysicalEntry";
 
       leaf name {
@@ -702,8 +704,8 @@ module ietf-entity {
            actually printed on the component itself (if present).
 
            If a serial number has been configured for this entity in
-           /entity/physical-entity/serial-num, this node contains the
-           configured value.";
+           /hardware/physical-entity/serial-num, this node contains
+           the configured value.";
         reference "RFC 6933: entPhysicalSerialNum";
       }
 
@@ -728,10 +730,10 @@ module ietf-entity {
       leaf model-name {
         type string;
         description
-          "The vendor-specific model name identifier string associated
-           with this physical component.  The preferred value is the
-           customer-visible part number, which may be printed on the
-           component itself.
+          "The vendor-specific model name identifier string
+           associated with this physical component.  The preferred
+           value is the customer-visible part number, which may be
+           printed on the component itself.
 
            If the model name string associated with the physical
            component is unknown to the server, then this node will
@@ -749,7 +751,7 @@ module ietf-entity {
            for the physical entity.
 
            If an alias has been configured for this entity in
-           /entity/physical-entity/alias, this node contains the
+           /hardware/physical-entity/alias, this node contains the
            configured value.  If no such alias has been configured,
            the server may set the value of this node to a locally
            unique value.";
@@ -762,12 +764,13 @@ module ietf-entity {
         }
         description
           "This node is a user-assigned asset tracking identifier
-           (as specified by a network manager) for the physical entity
-           and provides non-volatile storage of this information.
+           (as specified by a network manager) for the physical
+           entity and provides non-volatile storage of this
+           information.
 
            If an asset tracking identifier has been configured for
-           this entity in /entity/physical-entity/addet-id, this node
-           contains the configured value.";
+           this entity in /hardware/physical-entity/addet-id, this
+           node contains the configured value.";
         reference "RFC 6933: entPhysicalAssetID";
       }
 
@@ -775,10 +778,10 @@ module ietf-entity {
         type boolean;
         description
           "This node indicates whether or not this physical entity
-           is considered a 'field replaceable unit' by the vendor.  If
-           this node contains the value 'true', then this
-           physical entity identifies a field replaceable unit.  For
-           all physical entities that represent components permanently
+           is considered a 'field replaceable unit' by the vendor.
+           If this node contains the value 'true', then this physical
+           entity identifies a field replaceable unit.  For all
+           physical entities that represent components permanently
            contained within a field replaceable unit, the value
            'false' should be returned for this node.";
         reference "RFC 6933: entPhysicalIsFRU";
@@ -798,7 +801,7 @@ module ietf-entity {
            physical entity.
 
            If uris have been configured for this entity in
-           /entity/physical-entity/uri, this node contains the
+           /hardware/physical-entity/uri, this node contains the
            configured values.";
         reference "RFC 6933: entPhysicalUris";
       }
@@ -824,23 +827,24 @@ module ietf-entity {
              standby-status changed for this entity.
 
              If there has been no change since the last
-             re-initialization of the local system, this node contains
-             the date and time of local system initialization.  If
-             there has been no change since the entity was added to
-             the local system, this node contains the date and time of
-             the insertion.";
+             re-initialization of the local system, this node
+             contains the date and time of local system
+             initialization.  If there has been no change since the
+             entity was added to the local system, this node contains
+             the date and time of the insertion.";
           reference "RFC 4268: entStateLastChanged";
         }
 
         leaf admin-state {
-          type entity-admin-state;
+          type admin-state;
           description
             "The administrative state for this entity.
 
-             This node refers to an entities administrative permission
-             to service both other entities within its containment
-             hierarchy as well other users of its services defined by
-             means outside the scope of this module.
+             This node refers to an entities administrative
+             permission to service both other entities within its
+             containment hierarchy as well other users of its
+             services defined by means outside the scope of this
+             module.
 
              Some physical entities exhibit only a subset of the
              remaining administrative state values.  Some entities
@@ -852,7 +856,7 @@ module ietf-entity {
         }
 
         leaf oper-state {
-          type entity-oper-state;
+          type oper-state;
           description
             "The operational state for this entity.
 
@@ -868,7 +872,7 @@ module ietf-entity {
         }
 
         leaf usage-state {
-          type entity-usage-state;
+          type usage-state;
           description
             "The usage state for this entity.
 
@@ -879,14 +883,14 @@ module ietf-entity {
              state values.  Entities that are unable to ever service
              any entities within a containment hierarchy will always
              have a usage state of 'busy'.  Some entities will only
-             ever be able to support one entity within its containment
-             hierarchy and will therefore only exhibit values of
-             'idle' and 'busy'.";
+             ever be able to support one entity within its
+             containment hierarchy and will therefore only exhibit
+             values of 'idle' and 'busy'.";
           reference "RFC 4268, entStateUsage";
         }
 
         leaf alarm-status {
-          type entity-alarm-status;
+          type alarm-status;
           description
             "The alarm status for this entity.  It does not include
              the alarms raised on child components within its
@@ -895,7 +899,7 @@ module ietf-entity {
         }
 
         leaf standby-status {
-          type entity-standby-status;
+          type standby-status;
           description
             "The standby status for this entity.
 
@@ -920,7 +924,7 @@ module ietf-entity {
         reference "RFC 3433: Entity Sensor MIB";
 
         leaf data-type {
-          type entity-sensor-data-type;
+          type sensor-data-type;
           description
             "The type of data units associated with the
              sensor value";
@@ -928,7 +932,7 @@ module ietf-entity {
         }
 
         leaf data-scale {
-          type entity-sensor-data-scale;
+          type sensor-data-scale;
           description
             "The (power of 10) scaling factor associated
              with the sensor value";
@@ -936,7 +940,7 @@ module ietf-entity {
         }
 
         leaf precision {
-          type entity-sensor-precision;
+          type sensor-precision;
           description
             "The number of decimal places of precision
              associated with the sensor value";
@@ -944,7 +948,7 @@ module ietf-entity {
         }
 
         leaf value {
-          type entity-sensor-value;
+          type sensor-value;
           description
             "The most recent measurement obtained by the server
              for this sensor.";
@@ -952,7 +956,7 @@ module ietf-entity {
         }
 
         leaf oper-status {
-          type entity-sensor-status;
+          type sensor-status;
           description
             "The operational status of the sensor.";
           reference "RFC 3433: entPhySensorOperStatus";
@@ -997,8 +1001,8 @@ module ietf-entity {
    * Configuration data nodes
    */
 
-  container entity {
-    if-feature entity-config;
+  container hardware {
+    if-feature hardware-config;
     description
       "Configuration parameters for physical entities.";
 
@@ -1032,8 +1036,8 @@ module ietf-entity {
         }
         description
           "This node is an 'alias' name for the physical entity, as
-           specified by a network manager, and provides a non-volatile
-           'handle' for the physical entity.";
+           specified by a network manager, and provides a non-
+           volatile 'handle' for the physical entity.";
         reference "RFC 6933: entPhysicalAlias";
       }
 
@@ -1058,7 +1062,7 @@ module ietf-entity {
 
       leaf admin-state {
         if-feature entity-state;
-        type entity-admin-state;
+        type admin-state;
         description
           "The administrative state for this entity.
 
@@ -1086,7 +1090,7 @@ module ietf-entity {
   notification ent-config-change {
     description
       "An ent-config-change notification is generated when the value
-       of /entity-state/last-change changes.";
+       of /hardware-state/last-change changes.";
     reference "RFC 6933, entConfigChange";
   }
 
@@ -1098,7 +1102,7 @@ module ietf-entity {
 
     leaf name {
       type leafref {
-        path "/entity-state/physical-entity/name";
+        path "/hardware-state/physical-entity/name";
       }
       description
         "The name of the entity that has transitioned into the
@@ -1106,14 +1110,14 @@ module ietf-entity {
     }
     leaf admin-state {
       type leafref {
-        path "/entity-state/physical-entity/state/admin-state";
+        path "/hardware-state/physical-entity/state/admin-state";
       }
       description
         "The administrative state for the entity.";
     }
     leaf alarm-status {
       type leafref {
-        path "/entity-state/physical-entity/state/alarm-status";
+        path "/hardware-state/physical-entity/state/alarm-status";
       }
       description
         "The alarm status for the entity.";
@@ -1129,7 +1133,7 @@ module ietf-entity {
 
     leaf name {
       type leafref {
-        path "/entity-state/physical-entity/name";
+        path "/hardware-state/physical-entity/name";
       }
       description
         "The name of the entity that has transitioned into the
@@ -1137,14 +1141,14 @@ module ietf-entity {
     }
     leaf admin-state {
       type leafref {
-        path "/entity-state/physical-entity/state/admin-state";
+        path "/hardware-state/physical-entity/state/admin-state";
       }
       description
         "The administrative state for the entity.";
     }
     leaf alarm-status {
       type leafref {
-        path "/entity-state/physical-entity/state/alarm-status";
+        path "/hardware-state/physical-entity/state/alarm-status";
       }
       description
         "The alarm status for the entity.";

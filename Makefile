@@ -12,7 +12,7 @@ pyang ?= pyang
 
 draft := $(basename $(lastword $(sort $(wildcard draft-*.xml)) $(sort $(wildcard draft-*.md)) $(sort $(wildcard draft-*.org)) ))
 
-trees = ietf-entity.tree
+trees = ietf-hardware.tree
 
 ifeq (,$(draft))
 $(warning No file named draft-*.md or draft-*.xml or draft-*.org)
@@ -52,7 +52,7 @@ ifeq (.org,$(draft_type))
 endif
 
 validate:
-	pyang --ietf $(yang)
+	pyang --ietf --max-line-length 69 $(yang)
 
 back.xml: back.xml.src
 	./mk-back $< > $@
@@ -72,9 +72,11 @@ $(draft).xml: back.xml $(trees) $(examples) $(yang)
 %.txt: %.xml
 	$(xml2rfc) $< -o $@ --text
 
-ietf-entity.tree: ietf-entity.yang
-	$(pyang) -f tree $< | \
-		sed -e 's;-> /entity-state/physical-entity/;-> /entity-state/physical-entity\n                                /;g' > $@
+ietf-hardware.tree: ietf-hardware.yang
+	$(pyang) -f tree --tree-line-length 68 $< > $@
+
+#	$(pyang) -f tree $< | \
+#		sed -e 's;-> /entity-state/physical-entity/;-> /entity-state/physical-entity\n                                /;g' > $@
 
 %.tree: %.yang
 	$(pyang) -f tree $< > $@
