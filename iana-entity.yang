@@ -24,11 +24,11 @@ module iana-entity {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-08-26 {
+  revision 2016-10-25 {
     description
       "Initial revision.";
     reference
-      "RFC XXXX: A YANG Data Model for Entity Management";
+      "RFC XXXX: A YANG Data Model for hardware Management";
   }
 
   /*

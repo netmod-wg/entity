@@ -60,7 +60,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2016-10-21 {
+  revision 2016-10-25 {
     description
       "Initial revision.";
     reference
@@ -81,7 +81,7 @@ module ietf-hardware {
   feature hardware-config {
     description
       "Indicates that the server supports configuration of
-       physical entities.";
+       hardware components.";
   }
 
   feature entity-state {
@@ -241,7 +241,7 @@ module ietf-hardware {
        warning condition.
 
        When no bits of this attribute are set, then no active
-       alarms are known against this entity and it is not under
+       alarms are known against this component and it is not under
        repair.";
     reference "RFC 4268: EntityAlarmStatus";
   }
@@ -492,7 +492,7 @@ module ietf-hardware {
        accuracy of the associated sensor-value node is
        correctly indicated.
 
-       For example, a physical entity representing a temperature
+       For example, a component representing a temperature
        sensor that can measure 0 degrees to 100 degrees C in 0.1
        degree increments, +/- 0.05 degrees, would have an
        sensor-precision value of '1', an
@@ -582,25 +582,25 @@ module ietf-hardware {
   container hardware-state {
     config false;
     description
-      "Data nodes for the operational state of physical entities.";
+      "Data nodes for the operational state of components.";
 
     leaf last-change {
       type yang:date-and-time;
       description
-        "The time the '/hardware-state/physical-entity' list
+        "The time the '/hardware-state/component' list
          changed.";
     }
 
-    list physical-entity {
+    list component {
       key name;
       description
-        "List of physical entities.";
+        "List of components.";
       reference "RFC 6933: entPhysicalEntry";
 
       leaf name {
         type string;
         description
-          "Administrative name assigned to this physical entity.
+          "Administrative name assigned to this component.
            No restrictions apply. Not required to be the same as
            entPhysicalName.";
       }
@@ -612,7 +612,7 @@ module ietf-hardware {
         mandatory true;
         description
           "An indication of the general hardware type
-           of the physical entity.";
+           of the component.";
         reference "RFC 6933: entPhysicalClass";
       }
 
@@ -630,30 +630,30 @@ module ietf-hardware {
       leaf description {
         type string;
         description
-          "A textual description of physical entity.  This node
+          "A textual description of component.  This node
            should contain a string that identifies the manufacturer's
-           name for the physical entity and should be set to a
-           distinct value for each version or model of the physical
-           entity.";
+           name for the component and should be set to a
+           distinct value for each version or model of the
+           component.";
         reference "RFC 6933: entPhysicalDescr";
       }
 
       leaf-list contained-in {
         type leafref {
-          path "../../physical-entity/name";
+          path "../../component/name";
         }
         description
-          "The name of the physical entity that 'contains'
-           this physical entity.";
+          "The name of the component that 'contains'
+           this component.";
         reference "RFC 6933: entPhysicalContainedIn";
       }
 
       leaf-list contains-child {
         type leafref {
-          path "../../physical-entity/name";
+          path "../../component/name";
         }
         description
-          "The name of the contained physical entity.";
+          "The name of the contained component.";
         reference "RFC 6933: entPhysicalChildIndex";
       }
 
@@ -664,7 +664,7 @@ module ietf-hardware {
         description
           "An indication of the relative position of this child
            component among all its sibling components.  Sibling
-           components are defined as physical entities that share the
+           components are defined as components that share the
            same instance values of each of the contained-in
            and class elements.";
         reference "RFC 6933: entPhysicalParentRelPos";
@@ -674,7 +674,7 @@ module ietf-hardware {
         type string;
         description
           "The vendor-specific hardware revision string for the
-           physical entity.  The preferred value is the hardware
+           component.  The preferred value is the hardware
            revision identifier actually printed on the component
            itself (if present).";
         reference "RFC 6933: entPhysicalHardwareRev";
@@ -684,7 +684,7 @@ module ietf-hardware {
         type string;
         description
           "The vendor-specific firmware revision string for the
-           physical entity.";
+           component.";
         reference "RFC 6933: entPhysicalFirmwareRev";
       }
 
@@ -692,19 +692,20 @@ module ietf-hardware {
         type string;
         description
           "The vendor-specific software revision string for the
-           physical entity.";
+           component.";
         reference "RFC 6933: entPhysicalSoftwareRev";
       }
 
       leaf serial-num {
         type string;
         description
-          "The vendor-specific serial number string for the physical
-           entity.  The preferred value is the serial number string
-           actually printed on the component itself (if present).
+          "The vendor-specific serial number string for the
+           component.  The preferred value is the serial number
+           string actually printed on the component itself (if
+           present).
 
-           If a serial number has been configured for this entity in
-           /hardware/physical-entity/serial-num, this node contains
+           If a serial number has been configured for this component
+           in /hardware/component/serial-num, this node contains
            the configured value.";
         reference "RFC 6933: entPhysicalSerialNum";
       }
@@ -718,7 +719,7 @@ module ietf-hardware {
 
            Note that comparisons between instances of the model-name,
            firmware-rev, software-rev, and the serial-num nodes are
-           only meaningful amongst physical entities with the same
+           only meaningful amongst component with the same
            value of mfg-name.
 
            If the manufacturer name string associated with the
@@ -746,12 +747,12 @@ module ietf-hardware {
           length "0 .. 32";
         }
         description
-          "An 'alias' name for the physical entity, as specified by
+          "An 'alias' name for the component, as specified by
            a network manager, and provides a non-volatile 'handle'
-           for the physical entity.
+           for the component.
 
-           If an alias has been configured for this entity in
-           /hardware/physical-entity/alias, this node contains the
+           If an alias has been configured for this component in
+           /hardware/component/alias, this node contains the
            configured value.  If no such alias has been configured,
            the server may set the value of this node to a locally
            unique value.";
@@ -764,12 +765,11 @@ module ietf-hardware {
         }
         description
           "This node is a user-assigned asset tracking identifier
-           (as specified by a network manager) for the physical
-           entity and provides non-volatile storage of this
-           information.
+           (as specified by a network manager) for the component
+           and provides non-volatile storage of this information.
 
            If an asset tracking identifier has been configured for
-           this entity in /hardware/physical-entity/addet-id, this
+           this component in /hardware/component/addet-id, this
            node contains the configured value.";
         reference "RFC 6933: entPhysicalAssetID";
       }
@@ -777,20 +777,20 @@ module ietf-hardware {
       leaf is-fru {
         type boolean;
         description
-          "This node indicates whether or not this physical entity
+          "This node indicates whether or not this component
            is considered a 'field replaceable unit' by the vendor.
-           If this node contains the value 'true', then this physical
-           entity identifies a field replaceable unit.  For all
-           physical entities that represent components permanently
-           contained within a field replaceable unit, the value
-           'false' should be returned for this node.";
+           If this node contains the value 'true', then this
+           component identifies a field replaceable unit.  For all
+           components that are permanently contained within a field
+           replaceable unit, the value 'false' should be returned
+           for this node.";
         reference "RFC 6933: entPhysicalIsFRU";
       }
 
       leaf mfg-date {
         type yang:date-and-time;
         description
-          "The date of manufacturing of the managed entity.";
+          "The date of manufacturing of the managed component.";
         reference "RFC 6933: entPhysicalMfgDate";
       }
 
@@ -798,10 +798,10 @@ module ietf-hardware {
         type inet:uri;
         description
           "This node contains identification information about the
-           physical entity.
+           component.
 
-           If uris have been configured for this entity in
-           /hardware/physical-entity/uri, this node contains the
+           If uris have been configured for this component in
+           /hardware/component/uri, this node contains the
            configured values.";
         reference "RFC 6933: entPhysicalUris";
       }
@@ -809,7 +809,7 @@ module ietf-hardware {
       leaf uuid {
         type yang:uuid;
         description
-          "A Universally Unique Identifier of the physical entity.";
+          "A Universally Unique Identifier of the component.";
         reference "RFC 6933: entPhysicalUUID";
       }
 
@@ -824,21 +824,21 @@ module ietf-hardware {
           description
             "The date and time when the value of any of the
              admin-state, oper-state, usage-state, alarm-status, or
-             standby-status changed for this entity.
+             standby-status changed for this component.
 
              If there has been no change since the last
              re-initialization of the local system, this node
              contains the date and time of local system
              initialization.  If there has been no change since the
-             entity was added to the local system, this node contains
-             the date and time of the insertion.";
+             component was added to the local system, this node
+             contains the date and time of the insertion.";
           reference "RFC 4268: entStateLastChanged";
         }
 
         leaf admin-state {
           type admin-state;
           description
-            "The administrative state for this entity.
+            "The administrative state for this component.
 
              This node refers to an entities administrative
              permission to service both other entities within its
@@ -846,7 +846,7 @@ module ietf-hardware {
              services defined by means outside the scope of this
              module.
 
-             Some physical entities exhibit only a subset of the
+             Some components exhibit only a subset of the
              remaining administrative state values.  Some entities
              cannot be locked, and hence this node exhibits only the
              'unlocked' state.  Other entities cannot be shutdown
@@ -858,7 +858,7 @@ module ietf-hardware {
         leaf oper-state {
           type oper-state;
           description
-            "The operational state for this entity.
+            "The operational state for this component.
 
              Note that this node does not follow the administrative
              state.  An administrative state of down does not predict
@@ -874,16 +874,16 @@ module ietf-hardware {
         leaf usage-state {
           type usage-state;
           description
-            "The usage state for this entity.
+            "The usage state for this component.
 
-             This node refers to an entity's ability to service more
-             physical entities in a containment hierarchy.
+             This node refers to a component's ability to service
+             more components in a containment hierarchy.
 
              Some entities will exhibit only a subset of the usage
              state values.  Entities that are unable to ever service
              any entities within a containment hierarchy will always
              have a usage state of 'busy'.  Some entities will only
-             ever be able to support one entity within its
+             ever be able to support one component within its
              containment hierarchy and will therefore only exhibit
              values of 'idle' and 'busy'.";
           reference "RFC 4268, entStateUsage";
@@ -892,8 +892,8 @@ module ietf-hardware {
         leaf alarm-status {
           type alarm-status;
           description
-            "The alarm status for this entity.  It does not include
-             the alarms raised on child components within its
+            "The alarm status for this component.  It does not
+             include the alarms raised on child components within its
              containment hierarchy.";
           reference "RFC 4268: entStateAlarm";
         }
@@ -901,10 +901,10 @@ module ietf-hardware {
         leaf standby-status {
           type standby-status;
           description
-            "The standby status for this entity.
+            "The standby status for this component.
 
              Some entities will exhibit only a subset of the
-             remaining standby state values.  If this entity
+             remaining standby state values.  If this component
              cannot operate in a standby role, the value of this
              node will always be 'providing-service'.";
           reference "RFC 4268: entStateStandby";
@@ -915,7 +915,7 @@ module ietf-hardware {
         when 'derived-from-or-self(../class,
                                    "ianaent:sensor")' {
           description
-            "Sensor data nodes present for any entity of type
+            "Sensor data nodes present for any component of type
              'sensor'";
         }
         if-feature entity-sensor;
@@ -1004,28 +1004,29 @@ module ietf-hardware {
   container hardware {
     if-feature hardware-config;
     description
-      "Configuration parameters for physical entities.";
+      "Configuration parameters for components.";
 
-    list physical-entity {
+    list component {
       key name;
       description
-        "List of configuration data for physical entities.";
+        "List of configuration data for components.";
 
       leaf name {
         type string;
         description
-          "Administrative name assigned to this physical entity.
+          "Administrative name assigned to this component.
            No restrictions apply.";
       }
 
       leaf serial-num {
         type string;
         description
-          "The vendor-specific serial number string for the physical
-           entity.  The preferred value is the serial number string
-           actually printed on the component itself (if present).
+          "The vendor-specific serial number string for the
+           component.  The preferred value is the serial number
+           string actually printed on the component itself (if
+           present).
 
-           This node is indented to be used for physical entities
+           This node is indented to be used for components
            for which the server cannot determine the serial number.";
         reference "RFC 6933: entPhysicalSerialNum";
       }
@@ -1035,9 +1036,9 @@ module ietf-hardware {
           length "0 .. 32";
         }
         description
-          "This node is an 'alias' name for the physical entity, as
+          "This node is an 'alias' name for the component, as
            specified by a network manager, and provides a non-
-           volatile 'handle' for the physical entity.";
+           volatile 'handle' for the component.";
         reference "RFC 6933: entPhysicalAlias";
       }
 
@@ -1047,8 +1048,7 @@ module ietf-hardware {
         }
         description
           "This node is a user-assigned asset tracking identifier
-           (as specified by a network manager) for the physical
-           entity";
+           (as specified by a network manager) for the component";
         reference "RFC 6933: entPhysicalAssetID";
       }
 
@@ -1056,7 +1056,7 @@ module ietf-hardware {
         type inet:uri;
         description
           "This node contains identification information about the
-           physical entity.";
+           component.";
         reference "RFC 6933: entPhysicalUris";
       }
 
@@ -1064,15 +1064,15 @@ module ietf-hardware {
         if-feature entity-state;
         type admin-state;
         description
-          "The administrative state for this entity.
+          "The administrative state for this component.
 
-           This node refers to an entity's administrative
+           This node refers to a component's administrative
            permission to service both other entities within
            its containment hierarchy as well other users of
            its services defined by means outside the scope
            of this module.
 
-           Some physical entities exhibit only a subset of the
+           Some components exhibit only a subset of the
            remaining administrative state values.  Some entities
            cannot be locked, and hence this node exhibits only
            the 'unlocked' state.  Other entities cannot be shutdown
@@ -1087,71 +1087,71 @@ module ietf-hardware {
    * Notifications
    */
 
-  notification ent-config-change {
+  notification harwdare-state-change {
     description
-      "An ent-config-change notification is generated when the value
-       of /hardware-state/last-change changes.";
+      "A hardware-state-change notification is generated when the
+       value of /hardware-state/last-change changes.";
     reference "RFC 6933, entConfigChange";
   }
 
-  notification ent-state-oper-enabled {
+  notification hardware-state-oper-enabled {
     if-feature entity-state;
     description
-      "An ent-state-oper-enabled notification signifies that
-       an entity has transitioned into the 'enabled' state.";
+      "A hardware-state-oper-enabled notification signifies that
+       a component has transitioned into the 'enabled' state.";
 
     leaf name {
       type leafref {
-        path "/hardware-state/physical-entity/name";
+        path "/hardware-state/component/name";
       }
       description
-        "The name of the entity that has transitioned into the
+        "The name of the component that has transitioned into the
          'enabled' state.";
     }
     leaf admin-state {
       type leafref {
-        path "/hardware-state/physical-entity/state/admin-state";
+        path "/hardware-state/component/state/admin-state";
       }
       description
-        "The administrative state for the entity.";
+        "The administrative state for the component.";
     }
     leaf alarm-status {
       type leafref {
-        path "/hardware-state/physical-entity/state/alarm-status";
+        path "/hardware-state/component/state/alarm-status";
       }
       description
-        "The alarm status for the entity.";
+        "The alarm status for the component.";
     }
     reference "RFC 4268, entStateOperEnabled";
   }
 
-  notification ent-state-oper-disabled {
+  notification hardware-state-oper-disabled {
     if-feature entity-state;
     description
-      "An ent-state-oper-disabled notification signifies that
-       an entity has transitioned into the 'disabled' state.";
+      "A hardware-state-oper-disabled notification signifies that
+       a component has transitioned into the 'disabled' state.";
 
     leaf name {
       type leafref {
-        path "/hardware-state/physical-entity/name";
+        path "/hardware-state/component/name";
       }
       description
-        "The name of the entity that has transitioned into the
+        "The name of the component that has transitioned into the
          'disabled' state.";
     }
     leaf admin-state {
       type leafref {
-        path "/hardware-state/physical-entity/state/admin-state";
+        path "/hardware-state/component/state/admin-state";
       }
       description
-        "The administrative state for the entity.";
+        "The administrative state for the component.";
     }
     leaf alarm-status {
       type leafref {
-        path "/hardware-state/physical-entity/state/alarm-status";
+        path "/hardware-state/component/state/alarm-status";
       }
       description
-        "The alarm status for the entity.";
+        "The alarm status for the component.";
     }
     reference "RFC 4268, entStateOperDisabled";
   }

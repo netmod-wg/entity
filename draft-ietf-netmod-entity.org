@@ -38,10 +38,10 @@ marked with a colon (":").
 This section describes some of the design objectives for the hardware
 model.
 
-- There are many common properties used to identify physical entities,
+- There are many common properties used to identify hardware components,
   which need to be supported in the hardware data module.
 - There are many important information and states about the
-  physical entities, which needs to be collected from the devices which
+  components, which needs to be collected from the devices which
   support the hardware data model.
 - The hardware data model SHOULD be suitable for new implementations
   to use as is.
@@ -56,11 +56,11 @@ following structure:
 
 !! include-figure ietf-hardware.tree
 
-** The Physical Entity Lists
+** The Components Lists
 
-The data model for physical entities presented in this document uses a
-flat list of entities.  Each entity in the list is identified by its
-name.  Furthermore, each entity has a mandatory "class" leaf.
+The data model for hardware presented in this document uses a
+flat list of components.  Each component in the list is identified by its
+name.  Furthermore, each component has a mandatory "class" leaf.
 
 The "iana-entity" module defines YANG identities for the
 hardware types in the IANA-maintained "IANA-ENTITY-MIB" registry.
@@ -70,16 +70,16 @@ hardware.  Vendors are encouraged to either directly use one of the
 common IANA-defined identities, or derive a more specific identity
 from one of them.
 
-There is one optional list of configured physical entities
-("/hardware/physical-entity"), and a separate list for the operational
-state of all physical entities ("/hardware-state/physical-entity").
+There is one optional list of configured components
+("/hardware/compontent"), and a separate list for the operational
+state of all components ("/hardware-state/component").
 
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
-/hardware-state/physical-entity list is mapped to one EntPhysicalEntry.
+/hardware-state/component list is mapped to one EntPhysicalEntry.
 Objects that are writable in the MIB are mapped to nodes in the
-/hardware/physical-entity list.
+/hardware/component list.
 
 The "physical-index" leaf MUST contain the value of the corresponding
 entPhysicalEntry's entPhysicalIndex.
@@ -99,7 +99,7 @@ The following tables list the YANG data nodes with corresponding
 objects in the ENTITY-MIB.
 
 -- YANG data nodes and related ENTITY-MIB objects
-| YANG data node in /entity-state/physical-entity | ENTITY-MIB object                      |
+| YANG data node in /hardware-state/component | ENTITY-MIB object                      |
 |-------------------------------------------------+----------------------------------------|
 | name                                            | entPhysicalName                        |
 | class                                           | entPhysicalClass entPhysicalVendorType |
@@ -131,11 +131,9 @@ TBD relationship to ^RFC4268^.
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2016-10-21.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2016-10-25.yang"
 
-Move this to a separate document?:
-
-!! include-figure iana-entity.yang extract-to="iana-entity@2016-08-26.yang"
+!! include-figure iana-entity.yang extract-to="iana-entity@2016-10-25.yang"
 
 * IANA Considerations @iana@
 
