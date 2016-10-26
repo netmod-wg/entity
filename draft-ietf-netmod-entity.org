@@ -39,7 +39,7 @@ This section describes some of the design objectives for the hardware
 model.
 
 - There are many common properties used to identify hardware components,
-  which need to be supported in the hardware data module.
+  which need to be supported in the hardware data model.
 - There are many important information and states about the
   components, which needs to be collected from the devices which
   support the hardware data model.
@@ -71,7 +71,7 @@ common IANA-defined identities, or derive a more specific identity
 from one of them.
 
 There is one optional list of configured components
-("/hardware/compontent"), and a separate list for the operational
+("/hardware/component"), and a separate list for the operational
 state of all components ("/hardware-state/component").
 
 * Relationship to ENTITY-MIB
@@ -141,7 +141,7 @@ This document registers a URI in the IETF XML registry
 ^RFC3688^. Following the format in RFC 3688, the following
 registration is requested to be made.
 
-     URI: TBD
+     URI: urn:ietf:params:xml:ns:yang:ietf-hardware
 
      Registrant Contact: The IESG.
 
@@ -150,9 +150,9 @@ registration is requested to be made.
 This document registers a YANG module in the YANG Module Names
 registry ^RFC6020^.
 
-  name:         ietf-entity
-  namespace:    TBD
-  prefix:       ent
+  name:         ietf-hardware
+  namespace:    urn:ietf:params:xml:ns:yang:ietf-hardware
+  prefix:       hw
   reference:    RFC XXXX
 
 * Security Considerations
@@ -162,6 +162,23 @@ TBD
 * Acknowledgements
 
 TBD
+
+*! start-appendix
+
+* Open Issues
+
+- Should the model support pre-configuration of hardware components?
+  The current model supports pre-configuration of components provided
+  the operator knows the name of the component to be installed.  A
+  more useful model would use the parent component, class, and
+  parent-rel-pos as identification.  If the system detects a component
+  and there is configuration available for the parent component,
+  class, and parent-rel-pos then the system would instatiate the
+  component with the provided name, and optionally additional
+  parameters.
+- Is there a need for a standard action 'reset' that can be used to
+  reset components?
+
 
 {{document:
     name ;
@@ -173,5 +190,5 @@ TBD
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
     contributor "author:Jie Dong:Huawei Technologies:jie.dong@huawei.com";
-    contributor "author:Dan Romascanu:Avaya:dromasca@avaya.com";
+    contributor "author:Dan Romascanu::dromasca@gmail.com";
 }}
