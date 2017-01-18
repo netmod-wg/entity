@@ -5,7 +5,7 @@ on a single server.
 
 * Introduction
 
-This document defines a YANG ^I-D.ietf-netmod-rfc6020bis^ data model
+This document defines a YANG ^RFC7950^ data model
 for the management of hardware on a single server.
 
 The data model includes configuration data and state data (status
@@ -48,6 +48,8 @@ model.
 - The hardware data model defined in this document can be implemented
   on a system that also implements ENTITY-MIB, thus the mapping
   between the hardware data model and ENTITY-MIB SHOULD be clear.
+- The data model should support pre-provisioning of hardware
+  components.
 
 * Hardware Data Model
 
@@ -62,7 +64,7 @@ The data model for hardware presented in this document uses a
 flat list of components.  Each component in the list is identified by its
 name.  Furthermore, each component has a mandatory "class" leaf.
 
-The "iana-entity" module defines YANG identities for the
+The "iana-hardware" module defines YANG identities for the
 hardware types in the IANA-maintained "IANA-ENTITY-MIB" registry.
 
 The "class" leaf is a YANG identity that describes the type of the
@@ -77,9 +79,9 @@ state of all components ("/hardware-state/component").
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
-/hardware-state/component list is mapped to one EntPhysicalEntry.
+"/hardware-state/component" list is mapped to one EntPhysicalEntry.
 Objects that are writable in the MIB are mapped to nodes in the
-/hardware/component list.
+"/hardware/component" list.
 
 The "physical-index" leaf MUST contain the value of the corresponding
 entPhysicalEntry's entPhysicalIndex.
@@ -87,11 +89,11 @@ entPhysicalEntry's entPhysicalIndex.
 The "class" leaf is mapped to both entPhysicalClass and
 entPhysicalVendorType.  If the value of the "class" leaf is an
 identity that is either derived from or is one of the identities in the
-"iana-entity" module, then entPhysicalClass contains the corresponding
+"iana-hardware" module, then entPhysicalClass contains the corresponding
 IANAPhysicalClass enumeration value.  Otherwise, entPhysicalClass
 contains the IANAPhysicalClass value "other(1)".  Vendors are
 encouraged to define an identity (derived from an identity in
-"iana-entity" if possible) for each enterprise-specific registration
+"iana-hardware" if possible) for each enterprise-specific registration
 identifier used for entPhysicalVendorType, and use that identity for
 the "class" leaf.
 
@@ -105,9 +107,9 @@ objects in the ENTITY-MIB.
 | class                                           | entPhysicalClass entPhysicalVendorType |
 | physical-index                                  | entPhysicalIndex                       |
 | description                                     | entPhysicalDescr                       |
-| contained-in                                    | entPhysicalContainedIn                 |
-| contains-child                                  | entPhysicalChildIndex                  |
+| parent                                          | entPhysicalContainedIn                 |
 | parent-rel-pos                                  | entPhysicalParentRelPos                |
+| contains-child                                  | entPhysicalChildIndex                  |
 | hardware-rev                                    | entPhysicalHardwareRev                 |
 | firmware-rev                                    | entPhysicalFirmwareRev                 |
 | software-rev                                    | entPhysicalSoftwareRev                 |
@@ -123,32 +125,66 @@ objects in the ENTITY-MIB.
 
 * Relationship to ENTITY-SENSOR-MIB
 
-TBD relationship to ^RFC3433^.
+If the device implements the ENTITY-SENSOR-MIB ^RFC3433^, each entry
+the in "/hardware-state/component" list where the container "sensor-data"
+exists is mapped to one EntPhySensorEntry.
+
+-- YANG data nodes and related ENTITY-SENSOR-MIB objects
+| YANG data node in /hardware-state/component/sensor-data | ENTITY-SENSOR-MIB object    |
+|---------------------------------------------------------+-----------------------------|
+| data-type                                               | entPhySensorType            |
+| data-scale                                              | entPhySensorScale           |
+| precision                                               | entPhySensorPrecision       |
+| value                                                   | entPhySensorValue           |
+| oper-status                                             | entPhySensorOperStatus      |
+| sensor-units-display                                    | entPhySensorUnitsDisplay    |
+| value-timestamp                                         | entPhySensorValueTimeStamp  |
+| value-update-rate                                       | entPhySensorValueUpdateRate |
+
 
 * Relationship to ENTITY-STATE-MIB
 
-TBD relationship to ^RFC4268^.
+If the device implements the ENTITY-STATE-MIB ^RFC4268^, each entry
+the in "/hardware-state/component" list where the container "state"
+exists is mapped to one EntStateEntry.
+
+-- YANG data nodes and related ENTITY-SENSOR-MIB objects
+| YANG data node in /hardware-state/component/state | ENTITY-STATE-MIB object |
+|---------------------------------------------------+-------------------------|
+| state-last-changed                                | entStateLastChanged     |
+| admin-state                                       | entStateAdmin           |
+| oper-state                                        | entStateOper            |
+| usage-state                                       | entStateUsage           |
+| alarm-status                                      | entStateAlarm           |
+| standby-status                                    | entStateStandby         |
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2016-10-25.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-01-18.yang"
 
-!! include-figure iana-entity.yang extract-to="iana-entity@2016-10-25.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-01-18.yang"
 
 * IANA Considerations @iana@
 
-This document registers a URI in the IETF XML registry
+This document registers two URIs in the IETF XML registry
 ^RFC3688^. Following the format in RFC 3688, the following
-registration is requested to be made.
+registrations are requested to be made.
 
-     URI: urn:ietf:params:xml:ns:yang:ietf-hardware
-
+     URI: urn:ietf:params:xml:ns:yang:iana-hardware
      Registrant Contact: The IESG.
-
      XML: N/A, the requested URI is an XML namespace.
 
-This document registers a YANG module in the YANG Module Names
+     URI: urn:ietf:params:xml:ns:yang:ietf-hardware
+     Registrant Contact: The IESG.
+     XML: N/A, the requested URI is an XML namespace.
+
+This document registers two YANG modules in the YANG Module Names
 registry ^RFC6020^.
+
+  name:         iana-hardware
+  namespace:    urn:ietf:params:xml:ns:yang:iana-hardware
+  prefix:       ianahw
+  reference:    RFC XXXX
 
   name:         ietf-hardware
   namespace:    urn:ietf:params:xml:ns:yang:ietf-hardware
@@ -157,28 +193,52 @@ registry ^RFC6020^.
 
 * Security Considerations
 
-TBD
+The YANG module defined in this memo is designed to be accessed via
+the NETCONF protocol ^RFC6241^.  The lowest NETCONF layer is the secure
+transport layer, and the mandatory-to-implement secure transport is
+Secure Shell (SSH) ^RFC6242^.  The NETCONF access control model
+^RFC6536^ provides the means to restrict access for particular NETCONF
+users to a pre-configured subset of all available NETCONF protocol
+operations and content.
 
-* Acknowledgements
+There are a number of data nodes defined in this YANG module that are
+writable/creatable/deletable (i.e., config true, which is the
+default).  These data nodes may be considered sensitive or vulnerable
+in some network environments. Write operations (e.g., edit-config) to
+these data nodes without proper protection can have a negative effect
+on network operations. These are the subtrees and data nodes and their
+sensitivity/vulnerability:
 
-TBD
+= /hardware/component/admin-state:
+Setting this node to 'locked' or 'shutting-down' can cause disruption
+of services ranging from those running on a port to those on an entire
+device, depending on the type of component.
+
+Some of the readable data nodes in this YANG module may be considered
+sensitive or vulnerable in some network environments. It is thus
+important to control read access (e.g., via get, get-config, or
+notification) to these data nodes. These are the subtrees and data
+nodes and their sensitivity/vulnerability:
+
+= /hardware-state/component:
+The leafs in this list expose information about the physical
+components in a device, which may be used to identify the vendor, model,
+version, and specific device-identification information of each
+system component.
+= /hardware-state/component/sensor-data/value:
+This node may expose the values of particular physical sensors in a
+device.
+= /hardware-state/component/state:
+Access to this node allows one to figure out
+what the active and standby resources in a device are.
+
+* Acknowledgments
+
+The authors wish to thank the following individuals, who all provided
+helpful comments on various draft versions of this document:  Bart
+Bogaert, Timothy Carey, William Lupton, Juergen Schoenwaelder.
 
 *! start-appendix
-
-* Open Issues
-
-- Should the model support pre-configuration of hardware components?
-  The current model supports pre-configuration of components provided
-  the operator knows the name of the component to be installed.  A
-  more useful model would use the parent component, class, and
-  parent-rel-pos as identification.  If the system detects a component
-  and there is configuration available for the parent component,
-  class, and parent-rel-pos then the system would instatiate the
-  component with the provided name, and optionally additional
-  parameters.
-- Is there a need for a standard action 'reset' that can be used to
-  reset components?
-
 
 {{document:
     name ;
@@ -186,7 +246,7 @@ TBD
     category std;
     references back.xml;
     title "A YANG Data Model for Hardware Management";
-    abbreviation "YANG Entity Management";
+    abbreviation "YANG Hardware Management";
     contributor "author:Andy Bierman:YumaWorks:andy@yumaworks.com";
     contributor "author:Martin Bjorklund:Tail-f Systems:mbj@tail-f.com";
     contributor "author:Jie Dong:Huawei Technologies:jie.dong@huawei.com";

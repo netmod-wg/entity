@@ -12,9 +12,15 @@
 
   ietf-ref:RFC6020
 
+  ietf-ref:RFC6241
+
+  ietf-ref:RFC6242
+
+  ietf-ref:RFC6536
+
   ietf-ref:RFC6933
 
-  ietf-ref:I-D.ietf-netmod-rfc6020bis
+  ietf-ref:RFC7950
 
 </references>
 

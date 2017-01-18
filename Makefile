@@ -75,9 +75,6 @@ $(draft).xml: back.xml $(trees) $(examples) $(yang)
 ietf-hardware.tree: ietf-hardware.yang
 	$(pyang) -f tree --tree-line-length 68 $< > $@
 
-#	$(pyang) -f tree $< | \
-#		sed -e 's;-> /entity-state/physical-entity/;-> /entity-state/physical-entity\n                                /;g' > $@
-
 %.tree: %.yang
 	$(pyang) -f tree $< > $@
 
