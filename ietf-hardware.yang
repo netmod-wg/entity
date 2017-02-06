@@ -1163,7 +1163,7 @@ module ietf-hardware {
    * Notifications
    */
 
-  notification harwdare-state-change {
+  notification hardware-state-change {
     description
       "A hardware-state-change notification is generated when the
        value of /hardware-state/last-change changes.";
