@@ -60,7 +60,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2017-01-18 {
+  revision 2017-03-07 {
     description
       "Initial revision.";
     reference
@@ -189,7 +189,7 @@ module ietf-hardware {
     reference "RFC 4268, EntityUsageState";
   }
 
-  typedef alarm-status {
+  typedef alarm-state {
     type bits {
       bit unknown {
         position 0;
@@ -235,7 +235,7 @@ module ietf-hardware {
       }
     }
     description
-      "Represents the possible values of alarm status.  An alarm is a
+      "Represents the possible values of alarm states.  An alarm is a
        persistent indication of an error or warning condition.
 
        When no bits of this attribute are set, then no active alarms
@@ -243,7 +243,7 @@ module ietf-hardware {
     reference "RFC 4268: EntityAlarmStatus";
   }
 
-  typedef standby-status {
+  typedef standby-state {
     type enumeration {
       enum unknown {
         value 1;
@@ -274,11 +274,11 @@ module ietf-hardware {
       }
     }
     description
-      "Represents the possible values of standby status.";
+      "Represents the possible values of standby states.";
     reference "RFC 4268: EntityStandbyStatus";
   }
 
-  typedef sensor-data-type {
+  typedef sensor-value-type {
     type enumeration {
       enum other {
         value 1;
@@ -345,16 +345,16 @@ module ietf-hardware {
       "A node using this data type represents the sensor measurement
        data type associated with a physical sensor value. The actual
        data units are determined by examining a node of this type
-       together with the associated sensor-data-scale node.
+       together with the associated sensor-value-scale node.
 
        A node of this type SHOULD be defined together with nodes of
-       type sensor-data-scale and sensor-precision. These three types
-       are used to identify the semantics of a node of type
-       sensor-value.";
+       type sensor-value-scale and sensor-value-precision. These
+       three types are used to identify the semantics of a node of
+       type sensor-value.";
     reference "RFC 3433: EntitySensorDataType";
   }
 
-  typedef sensor-data-scale {
+  typedef sensor-value-scale {
     type enumeration {
       enum yocto {
         value 1;
@@ -446,25 +446,25 @@ module ietf-hardware {
       "A node using this data type represents a data scaling factor,
        represented with an International System of Units (SI) prefix.
        The actual data units are determined by examining a node of
-       this type together with the associated sensor-data-type.
+       this type together with the associated sensor-value-type.
 
        A node of this type SHOULD be defined together with nodes of
-       type sensor-data-type and sensor-precision.  Together,
+       type sensor-value-type and sensor-value-precision.  Together,
        associated nodes of these three types are used to identify the
        semantics of a node of type sensor-value.";
     reference "RFC 3433: EntitySensorDataScale";
   }
 
-  typedef sensor-precision {
+  typedef sensor-value-precision {
     type int32 {
       range "-8 .. 9";
     }
     description
-      "A node using this data type represents a sensor precision
-       range.
+      "A node using this data type represents a sensor value
+       precision range.
 
        A node of this type SHOULD be defined together with nodes of
-       type sensor-data-type and sensor-data-scale.  Together,
+       type sensor-value-type and sensor-value-scale.  Together,
        associated nodes of these three types are used to identify the
        semantics of a node of type sensor-value.
 
@@ -480,15 +480,16 @@ module ietf-hardware {
        not a fixed-point number.
 
        Server implementers must choose a value for the associated
-       sensor-precision node so that the precision and accuracy of
-       the associated sensor-value node is correctly indicated.
+       sensor-value-precision node so that the precision and accuracy
+       of the associated sensor-value node is correctly indicated.
 
        For example, a component representing a temperature sensor
        that can measure 0 degrees to 100 degrees C in 0.1 degree
-       increments, +/- 0.05 degrees, would have an sensor-precision
-       value of '1', an sensor-data-scale value of 'units', and an
-       sensor-value ranging from '0' to '1000'.  The sensor-value
-       would be interpreted as 'degrees C * 10'.";
+       increments, +/- 0.05 degrees, would have an
+       sensor-value-precision value of '1', an sensor-value-scale
+       value of 'units', and an sensor-value ranging from '0' to
+       '1000'.  The sensor-value would be interpreted as
+       'degrees C * 10'.";
     reference "RFC 3433: EntitySensorPrecision";
   }
 
@@ -500,35 +501,36 @@ module ietf-hardware {
      "A node using this data type represents an sensor value.
 
       A node of this type SHOULD be defined together with nodes of
-      type sensor-data-type, sensor-data-scale, and sensor-precision.
-      Together, associated nodes of those three types are used to
-      identify the semantics of a node of this data type.
+      type sensor-value-type, sensor-value-scale, and
+      sensor-value-precision.  Together, associated nodes of those
+      three types are used to identify the semantics of a node of
+      this data type.
 
       The semantics of a node using this data type are determined by
-      the value of the associated sensor-data-type node.
+      the value of the associated sensor-value-type node.
 
-      If the associated sensor-data-type node is equal to 'voltsAC',
+      If the associated sensor-value-type node is equal to 'voltsAC',
       'voltsDC', 'amperes', 'watts', 'hertz', 'celsius', or 'cmm',
       then a node of this type MUST contain a fixed point number
       ranging from -999,999,999 to +999,999,999.  The value
       -1000000000 indicates an underflow error. The value +1000000000
-      indicates an overflow error.  The sensor-precision indicates
-      how many fractional digits are represented in the associated
-      sensor-value node.
+      indicates an overflow error.  The sensor-value-precision
+      indicates how many fractional digits are represented in the
+      associated sensor-value node.
 
-      If the associated sensor-data-type node is equal to
+      If the associated sensor-value-type node is equal to
       'percentRH', then a node of this type MUST contain a number
       ranging from 0 to 100.
 
-      If the associated sensor-data-type node is equal to 'rpm', then
-      a node of this type MUST contain a number ranging from
+      If the associated sensor-value-type node is equal to 'rpm',
+      then a node of this type MUST contain a number ranging from
       -999,999,999 to +999,999,999.
 
-      If the associated sensor-data-type node is equal to
+      If the associated sensor-value-type node is equal to
       'truth-value', then a node of this type MUST contain either the
       value 1 (true) or the value 2 (false)'.
 
-      If the associated sensor-data-type node is equal to 'other' or
+      If the associated sensor-value-type node is equal to 'other' or
       unknown', then a node of this type MUST contain a number
       ranging from -1000000000 to 1000000000.";
     reference "RFC 3433: EntitySensorValue";
@@ -849,8 +851,8 @@ module ietf-hardware {
           type yang:date-and-time;
           description
             "The date and time when the value of any of the
-             admin-state, oper-state, usage-state, alarm-status, or
-             standby-status changed for this component.
+             admin-state, oper-state, usage-state, alarm-state, or
+             standby-state changed for this component.
 
              If there has been no change since the last
              re-initialization of the local system, this node
@@ -915,19 +917,19 @@ module ietf-hardware {
           reference "RFC 4268, entStateUsage";
         }
 
-        leaf alarm-status {
-          type alarm-status;
+        leaf alarm-state {
+          type alarm-state;
           description
-            "The alarm status for this component.  It does not
+            "The alarm state for this component.  It does not
              include the alarms raised on child components within its
              containment hierarchy.";
           reference "RFC 4268: entStateAlarm";
         }
 
-        leaf standby-status {
-          type standby-status;
+        leaf standby-state {
+          type standby-state;
           description
-            "The standby status for this component.
+            "The standby state for this component.
 
              Some components will exhibit only a subset of the
              remaining standby state values.  If this component
@@ -949,36 +951,41 @@ module ietf-hardware {
           "Sensor-related nodes.";
         reference "RFC 3433: Entity Sensor MIB";
 
-        leaf data-type {
-          type sensor-data-type;
+        leaf value {
+          type sensor-value;
+          description
+            "The most recent measurement obtained by the server
+             for this sensor.
+
+             A client that periodically fetches this node should also
+             fetch the nodes 'value-type', 'value-scale', and
+             'value-precision', since they may change when the value
+             is changed.";
+          reference "RFC 3433: entPhySensorValue";
+        }
+
+        leaf value-type {
+          type sensor-value-type;
           description
             "The type of data units associated with the
              sensor value";
           reference "RFC 3433: entPhySensorType";
         }
 
-        leaf data-scale {
-          type sensor-data-scale;
+        leaf value-scale {
+          type sensor-value-scale;
           description
             "The (power of 10) scaling factor associated
              with the sensor value";
           reference "RFC 3433: entPhySensorScale";
         }
 
-        leaf precision {
-          type sensor-precision;
+        leaf value-precision {
+          type sensor-value-precision;
           description
             "The number of decimal places of precision
              associated with the sensor value";
           reference "RFC 3433: entPhySensorPrecision";
-        }
-
-        leaf value {
-          type sensor-value;
-          description
-            "The most recent measurement obtained by the server
-             for this sensor.";
-          reference "RFC 3433: entPhySensorValue";
         }
 
         leaf oper-status {
@@ -988,7 +995,7 @@ module ietf-hardware {
           reference "RFC 3433: entPhySensorOperStatus";
         }
 
-        leaf sensor-units-display {
+        leaf units-display {
           type string;
           description
             "A textual description of the data units that should be
@@ -1059,7 +1066,10 @@ module ietf-hardware {
       }
 
       leaf parent {
-        type string;
+        type leafref {
+          path "/hardware-state/component/name";
+          require-instance false;
+        }
         description
           "The name of the component that contains this component.";
         reference "RFC 6933: entPhysicalContainedIn";
@@ -1191,12 +1201,12 @@ module ietf-hardware {
       description
         "The administrative state for the component.";
     }
-    leaf alarm-status {
+    leaf alarm-state {
       type leafref {
-        path "/hardware-state/component/state/alarm-status";
+        path "/hardware-state/component/state/alarm-state";
       }
       description
-        "The alarm status for the component.";
+        "The alarm state for the component.";
     }
     reference "RFC 4268, entStateOperEnabled";
   }
@@ -1222,12 +1232,12 @@ module ietf-hardware {
       description
         "The administrative state for the component.";
     }
-    leaf alarm-status {
+    leaf alarm-state {
       type leafref {
-        path "/hardware-state/component/state/alarm-status";
+        path "/hardware-state/component/state/alarm-state";
       }
       description
-        "The alarm status for the component.";
+        "The alarm state for the component.";
     }
     reference "RFC 4268, entStateOperDisabled";
   }

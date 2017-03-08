@@ -132,15 +132,14 @@ exists is mapped to one EntPhySensorEntry.
 -- YANG data nodes and related ENTITY-SENSOR-MIB objects
 | YANG data node in /hardware-state/component/sensor-data | ENTITY-SENSOR-MIB object    |
 |---------------------------------------------------------+-----------------------------|
-| data-type                                               | entPhySensorType            |
-| data-scale                                              | entPhySensorScale           |
-| precision                                               | entPhySensorPrecision       |
 | value                                                   | entPhySensorValue           |
+| value-type                                              | entPhySensorType            |
+| value-scale                                             | entPhySensorScale           |
+| value-precision                                         | entPhySensorPrecision       |
 | oper-status                                             | entPhySensorOperStatus      |
-| sensor-units-display                                    | entPhySensorUnitsDisplay    |
+| units-display                                           | entPhySensorUnitsDisplay    |
 | value-timestamp                                         | entPhySensorValueTimeStamp  |
 | value-update-rate                                       | entPhySensorValueUpdateRate |
-
 
 * Relationship to ENTITY-STATE-MIB
 
@@ -155,14 +154,14 @@ exists is mapped to one EntStateEntry.
 | admin-state                                       | entStateAdmin           |
 | oper-state                                        | entStateOper            |
 | usage-state                                       | entStateUsage           |
-| alarm-status                                      | entStateAlarm           |
-| standby-status                                    | entStateStandby         |
+| alarm-state                                       | entStateAlarm           |
+| standby-state                                     | entStateStandby         |
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-01-18.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-03-07.yang"
 
-!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-01-18.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-03-07.yang"
 
 * IANA Considerations @iana@
 
