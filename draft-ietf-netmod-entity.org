@@ -72,10 +72,6 @@ hardware.  Vendors are encouraged to either directly use one of the
 common IANA-defined identities, or derive a more specific identity
 from one of them.
 
-There is one optional list of configured components
-("/hardware/component"), and a separate list for the operational
-state of all components ("/hardware-state/component").
-
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
@@ -101,61 +97,61 @@ The following tables list the YANG data nodes with corresponding
 objects in the ENTITY-MIB.
 
 -- YANG data nodes and related ENTITY-MIB objects
-| YANG data node in /hardware-state/component | ENTITY-MIB object                      |
-|-------------------------------------------------+----------------------------------------|
-| name                                            | entPhysicalName                        |
-| class                                           | entPhysicalClass entPhysicalVendorType |
-| physical-index                                  | entPhysicalIndex                       |
-| description                                     | entPhysicalDescr                       |
-| parent                                          | entPhysicalContainedIn                 |
-| parent-rel-pos                                  | entPhysicalParentRelPos                |
-| contains-child                                  | entPhysicalChildIndex                  |
-| hardware-rev                                    | entPhysicalHardwareRev                 |
-| firmware-rev                                    | entPhysicalFirmwareRev                 |
-| software-rev                                    | entPhysicalSoftwareRev                 |
-| serial-num                                      | entPhysicalSerialNum                   |
-| mfg-name                                        | entPhysicalMfgName                     |
-| model-name                                      | entPhysicalModelName                   |
-| alias                                           | entPhysicalAlias                       |
-| asset-id                                        | entPhysicalAssetID                     |
-| is-fru                                          | entPhysicalIsFRU                       |
-| mfg-date                                        | entPhysicalMfgDate                     |
-| uri                                             | entPhysicalUris                        |
-| uuid                                            | entPhysicalUUID                        |
+| YANG data node in /hardware/component | ENTITY-MIB object                      |
+|---------------------------------------+----------------------------------------|
+| name                                  | entPhysicalName                        |
+| class                                 | entPhysicalClass entPhysicalVendorType |
+| physical-index                        | entPhysicalIndex                       |
+| description                           | entPhysicalDescr                       |
+| parent                                | entPhysicalContainedIn                 |
+| parent-rel-pos                        | entPhysicalParentRelPos                |
+| contains-child                        | entPhysicalChildIndex                  |
+| hardware-rev                          | entPhysicalHardwareRev                 |
+| firmware-rev                          | entPhysicalFirmwareRev                 |
+| software-rev                          | entPhysicalSoftwareRev                 |
+| serial-num                            | entPhysicalSerialNum                   |
+| mfg-name                              | entPhysicalMfgName                     |
+| model-name                            | entPhysicalModelName                   |
+| alias                                 | entPhysicalAlias                       |
+| asset-id                              | entPhysicalAssetID                     |
+| is-fru                                | entPhysicalIsFRU                       |
+| mfg-date                              | entPhysicalMfgDate                     |
+| uri                                   | entPhysicalUris                        |
+| uuid                                  | entPhysicalUUID                        |
 
 * Relationship to ENTITY-SENSOR-MIB
 
 If the device implements the ENTITY-SENSOR-MIB ^RFC3433^, each entry
-the in "/hardware-state/component" list where the container "sensor-data"
+the in "/hardware/component" list where the container "sensor-data"
 exists is mapped to one EntPhySensorEntry.
 
 -- YANG data nodes and related ENTITY-SENSOR-MIB objects
-| YANG data node in /hardware-state/component/sensor-data | ENTITY-SENSOR-MIB object    |
-|---------------------------------------------------------+-----------------------------|
-| value                                                   | entPhySensorValue           |
-| value-type                                              | entPhySensorType            |
-| value-scale                                             | entPhySensorScale           |
-| value-precision                                         | entPhySensorPrecision       |
-| oper-status                                             | entPhySensorOperStatus      |
-| units-display                                           | entPhySensorUnitsDisplay    |
-| value-timestamp                                         | entPhySensorValueTimeStamp  |
-| value-update-rate                                       | entPhySensorValueUpdateRate |
+| YANG data node in /hardware/component/sensor-data | ENTITY-SENSOR-MIB object    |
+|---------------------------------------------------+-----------------------------|
+| value                                             | entPhySensorValue           |
+| value-type                                        | entPhySensorType            |
+| value-scale                                       | entPhySensorScale           |
+| value-precision                                   | entPhySensorPrecision       |
+| oper-status                                       | entPhySensorOperStatus      |
+| units-display                                     | entPhySensorUnitsDisplay    |
+| value-timestamp                                   | entPhySensorValueTimeStamp  |
+| value-update-rate                                 | entPhySensorValueUpdateRate |
 
 * Relationship to ENTITY-STATE-MIB
 
 If the device implements the ENTITY-STATE-MIB ^RFC4268^, each entry
-the in "/hardware-state/component" list where the container "state"
+the in "/hardware/component" list where the container "state"
 exists is mapped to one EntStateEntry.
 
 -- YANG data nodes and related ENTITY-SENSOR-MIB objects
-| YANG data node in /hardware-state/component/state | ENTITY-STATE-MIB object |
-|---------------------------------------------------+-------------------------|
-| state-last-changed                                | entStateLastChanged     |
-| admin-state                                       | entStateAdmin           |
-| oper-state                                        | entStateOper            |
-| usage-state                                       | entStateUsage           |
-| alarm-state                                       | entStateAlarm           |
-| standby-state                                     | entStateStandby         |
+| YANG data node in /hardware/component/state | ENTITY-STATE-MIB object |
+|---------------------------------------------+-------------------------|
+| state-last-changed                          | entStateLastChanged     |
+| admin-state                                 | entStateAdmin           |
+| oper-state                                  | entStateOper            |
+| usage-state                                 | entStateUsage           |
+| alarm-state                                 | entStateAlarm           |
+| standby-state                               | entStateStandby         |
 
 * Hardware YANG Module
 
@@ -219,15 +215,15 @@ important to control read access (e.g., via get, get-config, or
 notification) to these data nodes. These are the subtrees and data
 nodes and their sensitivity/vulnerability:
 
-= /hardware-state/component:
+= /hardware/component:
 The leafs in this list expose information about the physical
 components in a device, which may be used to identify the vendor, model,
 version, and specific device-identification information of each
 system component.
-= /hardware-state/component/sensor-data/value:
+= /hardware/component/sensor-data/value:
 This node may expose the values of particular physical sensors in a
 device.
-= /hardware-state/component/state:
+= /hardware/component/state:
 Access to this node allows one to figure out
 what the active and standby resources in a device are.
 

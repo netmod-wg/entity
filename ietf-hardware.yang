@@ -20,12 +20,6 @@ module ietf-hardware {
     "WG Web:   <http://tools.ietf.org/wg/netmod/>
      WG List:  <mailto:netmod@ietf.org>
 
-     WG Chair: Lou Berger
-               <mailto:lberger@labn.net>
-
-     WG Chair: Kent Watsen
-               <mailto:kwatsen@juniper.net>
-
      Editor:   Andy Bierman
                <mailto:andy@yumaworks.com>
 
@@ -45,6 +39,9 @@ module ietf-hardware {
     "This module contains a collection of YANG definitions for
      managing hardware.
 
+     This data model is designed for the Network Management Datastore
+     Architecture defined in XXX.
+
      Copyright (c) 2017 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
 
@@ -60,7 +57,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2017-03-07 {
+  revision 2017-03-29 {
     description
       "Initial revision.";
     reference
@@ -76,12 +73,6 @@ module ietf-hardware {
       "This feature indicates that the device implements
        the ENTITY-MIB.";
     reference "RFC 6933: Entity MIB (Version 4)";
-  }
-
-  feature hardware-config {
-    description
-      "Indicates that the server supports configuration of
-       hardware components.";
   }
 
   feature hardware-state {
@@ -135,7 +126,7 @@ module ietf-hardware {
       enum unknown {
         value 1;
         description
-          "The resource is unable to report operational state.";
+          "The resource is unable to report its operational state.";
       }
       enum disabled {
         value 2;
@@ -565,18 +556,23 @@ module ietf-hardware {
   }
 
   /*
-   * Operational state data nodes
+   * Data nodes
    */
 
-  container hardware-state {
-    config false;
+  container hardware {
     description
-      "Data nodes for the operational state of components.";
+      "Data nodes representing components.
+
+       If the server does not support configuration of hardware
+       components, this data model is not instantiated in the
+       configuration datastores supported by the server.";
 
     leaf last-change {
       type yang:date-and-time;
+      config false;
       description
-        "The time the '/hardware-state/component' list changed.";
+        "The time the '/hardware/component' list changed in the
+         operational datastore.";
     }
 
     list component {
@@ -587,16 +583,16 @@ module ietf-hardware {
          When the server detects a new hardware component, it
          initializes an entry in this list.
 
-         If the server does not support the feature
-         'hardware-config', the entry is initialized with values for
-         all nodes as detected by the implementation.
+         If the server does not support configuration of components,
+         the entry is initialized with values for all nodes as
+         detected by the implementation.
 
          Otherwise, the following procedure is followed:
 
-           1. If there is an entry in the /hardware/component list
-              with values for the nodes 'class', 'parent',
-              'parent-rel-pos' that are equal to the detected values,
-              then:
+           1. If there is an entry in the /hardware/component list in
+              the intended configuration with values for the nodes
+              'class', 'parent', 'parent-rel-pos' that are equal to
+              the detected values, then:
 
            1a. If the configured entry has a value for 'mfg-name'
                that is equal to the detected value, or if the
@@ -614,10 +610,10 @@ module ietf-hardware {
                entry), the entry is initialized with values for all
                nodes as detected by the implementation.
 
-         If the /hardware/component list is modified (i.e., someone
-         changed the configuration), then the system MUST behave as
-         if it re-initializes itself, and follow the procedure in
-         (1).";
+         If the /hardware/component list in the intended
+         configuration is modified (i.e., someone changed the
+         configuration), then the system MUST behave as if it
+         re-initializes itself, and follow the procedure in (1).";
 
       reference "RFC 6933: entPhysicalEntry";
 
@@ -646,6 +642,7 @@ module ietf-hardware {
         type int32 {
           range "1..2147483647";
         }
+        config false;
         description
           "The entPhysicalIndex for the entPhysicalEntry represented
            by this list entry.";
@@ -654,6 +651,7 @@ module ietf-hardware {
 
       leaf description {
         type string;
+        config false;
         description
           "A textual description of component.  This node should
            contain a string that identifies the manufacturer's name
@@ -665,6 +663,7 @@ module ietf-hardware {
       leaf parent {
         type leafref {
           path "../../component/name";
+          require-instance false;
         }
         description
           "The name of the component that physically contains this
@@ -698,6 +697,7 @@ module ietf-hardware {
         type leafref {
           path "../../component/name";
         }
+        config false;
         description
           "The name of the contained component.";
         reference "RFC 6933: entPhysicalChildIndex";
@@ -705,6 +705,7 @@ module ietf-hardware {
 
       leaf hardware-rev {
         type string;
+        config false;
         description
           "The vendor-specific hardware revision string for the
            component.  The preferred value is the hardware revision
@@ -715,6 +716,7 @@ module ietf-hardware {
 
       leaf firmware-rev {
         type string;
+        config false;
         description
           "The vendor-specific firmware revision string for the
            component.";
@@ -723,6 +725,7 @@ module ietf-hardware {
 
       leaf software-rev {
         type string;
+        config false;
         description
           "The vendor-specific software revision string for the
            component.";
@@ -731,15 +734,15 @@ module ietf-hardware {
 
       leaf serial-num {
         type string;
+        config false;
         description
           "The vendor-specific serial number string for the
            component.  The preferred value is the serial number
            string actually printed on the component itself (if
            present).
 
-           If a serial number has been configured for this component
-           in /hardware/component/serial-num, this node contains the
-           configured value.";
+           If a value for this node has been configured, the server
+           MUST use this value in the operational datastore.";
         reference "RFC 6933: entPhysicalSerialNum";
       }
 
@@ -763,6 +766,7 @@ module ietf-hardware {
 
       leaf model-name {
         type string;
+        config false;
         description
           "The vendor-specific model name identifier string
            associated with this physical component.  The preferred
@@ -782,11 +786,18 @@ module ietf-hardware {
            network manager, and provides a non-volatile 'handle' for
            the component.
 
-           If an alias has been configured for this component in
-           /hardware/component/alias, this node contains the
-           configured value.  If no such alias has been configured,
-           the server may set the value of this node to a locally
-           unique value.";
+           If a value for this node has been configured, the server
+           MUST use this value in the operational datastore.  If no
+           such value has been configured, the server MAY set the
+           value of this node to a locally unique value in the
+           operational datastore.
+
+           A server implementation MAY map this leaf to the
+           entPhysicalAlias MIB object.  Such an implementation needs
+           to use some mechanism to handle the differences in size
+           and characters allowed between this leaf and
+           entPhysicalAlias.  The definition of such a mechanism is
+           outside the scope of this document.";
         reference "RFC 6933: entPhysicalAlias";
       }
 
@@ -796,14 +807,21 @@ module ietf-hardware {
           "This node is a user-assigned asset tracking identifier for
            the component.
 
-           If an asset tracking identifier has been configured for
-           this component in /hardware/component/asset-id, this node
-           contains the configured value.";
+           If a value for this node has been configured, the server
+           MUST use this value in the operational datastore.
+
+           A server implementation MAY map this leaf to the
+           entPhysicalAssetID MIB object.  Such an implementation
+           needs to use some mechanism to handle the differences in
+           size and characters allowed between this leaf and
+           entPhysicalAssetID.  The definition of such a mechanism is
+           outside the scope of this document.";
         reference "RFC 6933: entPhysicalAssetID";
       }
 
       leaf is-fru {
         type boolean;
+        config false;
         description
           "This node indicates whether or not this component is
            considered a 'field replaceable unit' by the vendor.  If
@@ -817,6 +835,7 @@ module ietf-hardware {
 
       leaf mfg-date {
         type yang:date-and-time;
+        config false;
         description
           "The date of manufacturing of the managed component.";
         reference "RFC 6933: entPhysicalMfgDate";
@@ -828,14 +847,14 @@ module ietf-hardware {
           "This node contains identification information about the
            component.
 
-           If uris have been configured for this component in
-           /hardware/component/uri, this node contains the configured
-           values.";
+           If values for this node has been configured, the server
+           MUST use these values in the operational datastore.";
         reference "RFC 6933: entPhysicalUris";
       }
 
       leaf uuid {
         type yang:uuid;
+        config false;
         description
           "A Universally Unique Identifier of the component.";
         reference "RFC 6933: entPhysicalUUID";
@@ -849,6 +868,7 @@ module ietf-hardware {
 
         leaf state-last-changed {
           type yang:date-and-time;
+          config false;
           description
             "The date and time when the value of any of the
              admin-state, oper-state, usage-state, alarm-state, or
@@ -885,6 +905,7 @@ module ietf-hardware {
 
         leaf oper-state {
           type oper-state;
+          config false;
           description
             "The operational state for this component.
 
@@ -901,6 +922,7 @@ module ietf-hardware {
 
         leaf usage-state {
           type usage-state;
+          config false;
           description
             "The usage state for this component.
 
@@ -919,6 +941,7 @@ module ietf-hardware {
 
         leaf alarm-state {
           type alarm-state;
+          config false;
           description
             "The alarm state for this component.  It does not
              include the alarms raised on child components within its
@@ -928,6 +951,7 @@ module ietf-hardware {
 
         leaf standby-state {
           type standby-state;
+          config false;
           description
             "The standby state for this component.
 
@@ -947,6 +971,8 @@ module ietf-hardware {
              'sensor'";
         }
         if-feature hardware-sensor;
+        config false;
+
         description
           "Sensor-related nodes.";
         reference "RFC 3433: Entity Sensor MIB";
@@ -1031,152 +1057,14 @@ module ietf-hardware {
   }
 
   /*
-   * Configuration data nodes
-   */
-
-  container hardware {
-    if-feature hardware-config;
-    description
-      "Configuration parameters for components.";
-
-    list component {
-      key name;
-      description
-        "List of configuration data for components.
-
-         See the description of /hardware-state/component for
-         information on how this list is used by a server.";
-
-      leaf name {
-        type string;
-        description
-          "Administrative name for this component.  No restrictions
-           apply.";
-      }
-
-      leaf class {
-        type identityref {
-          base ianahw:hardware-class;
-        }
-        mandatory true;
-        description
-          "An indication of the general hardware type of the
-           component.";
-        reference "RFC 6933: entPhysicalClass";
-      }
-
-      leaf parent {
-        type leafref {
-          path "/hardware-state/component/name";
-          require-instance false;
-        }
-        description
-          "The name of the component that contains this component.";
-        reference "RFC 6933: entPhysicalContainedIn";
-      }
-
-      leaf parent-rel-pos {
-        type int32 {
-          range "0 .. 2147483647";
-        }
-        description
-          "An indication of the relative position of this child
-           component among all its sibling components.  Sibling
-           components are defined as components that share the same
-           instance values of each of the 'parent' and 'class'
-           nodes.";
-        reference "RFC 6933: entPhysicalParentRelPos";
-      }
-
-      leaf mfg-name {
-        type string;
-        description
-          "The name of the manufacturer of this physical component.";
-        reference "RFC 6933: entPhysicalMfgName";
-      }
-
-      leaf serial-num {
-        type string;
-        description
-          "The vendor-specific serial number string for the
-           component.  The preferred value is the serial number
-           string actually printed on the component itself (if
-           present).
-
-           This node is indented to be used for components for which
-           the server cannot determine the serial number.";
-        reference "RFC 6933: entPhysicalSerialNum";
-      }
-
-      leaf alias {
-        type string;
-        description
-          "This node is an 'alias' name for the component, as
-           specified by a network manager, and provides a non-
-           volatile 'handle' for the component.
-
-           A server implementation MAY map this leaf to the
-           entPhysicalAlias MIB object.  Such an implementation needs
-           to use some mechanism to handle the differences in size
-           and characters allowed between this leaf and
-           entPhysicalAlias.  The definition of such a mechanism is
-           outside the scope of this document.";
-        reference "RFC 6933: entPhysicalAlias";
-      }
-
-      leaf asset-id {
-        type string;
-        description
-          "This node is a user-assigned asset tracking identifier (as
-           specified by a network manager) for the component.
-
-           A server implementation MAY map this leaf to the
-           entPhysicalAssetID MIB object.  Such an implementation
-           needs to use some mechanism to handle the differences in
-           size and characters allowed between this leaf and
-           entPhysicalAssetID.  The definition of such a mechanism is
-           outside the scope of this document.";
-        reference "RFC 6933: entPhysicalAssetID";
-      }
-
-      leaf-list uri {
-        type inet:uri;
-        description
-          "This node contains identification information about the
-           component.";
-        reference "RFC 6933: entPhysicalUris";
-      }
-
-      leaf admin-state {
-        if-feature hardware-state;
-        type admin-state;
-        description
-          "The administrative state for this component.
-
-           This node refers to a component's administrative
-           permission to service both other components within its
-           containment hierarchy as well other users of its services
-           defined by means outside the scope of this module.
-
-           Some components exhibit only a subset of the remaining
-           administrative state values.  Some components cannot be
-           locked, and hence this node exhibits only the 'unlocked'
-           state.  Other components cannot be shutdown gracefully,
-           and hence this node does not exhibit the 'shutting-down'
-           state.";
-        reference "RFC 4268, entStateAdmin";
-      }
-    }
-  }
-
-  /*
    * Notifications
    */
 
   notification hardware-state-change {
     description
       "A hardware-state-change notification is generated when the
-       value of /hardware-state/last-change changes.";
+       value of /hardware/last-change changes in the operational
+       datastore.";
     reference "RFC 6933, entConfigChange";
   }
 
@@ -1188,7 +1076,7 @@ module ietf-hardware {
 
     leaf name {
       type leafref {
-        path "/hardware-state/component/name";
+        path "/hardware/component/name";
       }
       description
         "The name of the component that has transitioned into the
@@ -1196,14 +1084,14 @@ module ietf-hardware {
     }
     leaf admin-state {
       type leafref {
-        path "/hardware-state/component/state/admin-state";
+        path "/hardware/component/state/admin-state";
       }
       description
         "The administrative state for the component.";
     }
     leaf alarm-state {
       type leafref {
-        path "/hardware-state/component/state/alarm-state";
+        path "/hardware/component/state/alarm-state";
       }
       description
         "The alarm state for the component.";
@@ -1219,7 +1107,7 @@ module ietf-hardware {
 
     leaf name {
       type leafref {
-        path "/hardware-state/component/name";
+        path "/hardware/component/name";
       }
       description
         "The name of the component that has transitioned into the
@@ -1227,14 +1115,14 @@ module ietf-hardware {
     }
     leaf admin-state {
       type leafref {
-        path "/hardware-state/component/state/admin-state";
+        path "/hardware/component/state/admin-state";
       }
       description
         "The administrative state for the component.";
     }
     leaf alarm-state {
       type leafref {
-        path "/hardware-state/component/state/alarm-state";
+        path "/hardware/component/state/alarm-state";
       }
       description
         "The alarm state for the component.";
