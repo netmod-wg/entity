@@ -32,15 +32,15 @@ module ietf-hardware {
      Editor:   Dan Romascanu
                <mailto:dromasca@gmail.com>";
 
-  // RFC Ed.: replace XXXX with actual RFC number and remove this
-  // note.
+  // RFC Ed.: replace XXXX and YYYY with actual RFC numbers and remove
+  // this note.
 
   description
     "This module contains a collection of YANG definitions for
      managing hardware.
 
      This data model is designed for the Network Management Datastore
-     Architecture defined in XXX.
+     Architecture defined in RFC YYYY.
 
      Copyright (c) 2017 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
@@ -563,16 +563,18 @@ module ietf-hardware {
     description
       "Data nodes representing components.
 
-       If the server does not support configuration of hardware
-       components, this data model is not instantiated in the
-       configuration datastores supported by the server.";
+       If the server supports configuration of hardware components,
+       then this data model is instantiated in the configuration
+       datastores supported by the server.  The leaf-list 'datastore'
+       for the module 'ietf-hardware' in the YANG library provides
+       this information.";
 
     leaf last-change {
       type yang:date-and-time;
       config false;
       description
         "The time the '/hardware/component' list changed in the
-         operational datastore.";
+         operational state.";
     }
 
     list component {
@@ -581,11 +583,12 @@ module ietf-hardware {
         "List of components.
 
          When the server detects a new hardware component, it
-         initializes an entry in this list.
+         initializes a list entry in the operational state.
 
-         If the server does not support configuration of components,
-         the entry is initialized with values for all nodes as
-         detected by the implementation.
+         If the server does not support configuration of hardware
+         components, list entries in the operational state are
+         initialized with values for all nodes as detected by the
+         implementation.
 
          Otherwise, the following procedure is followed:
 
@@ -594,25 +597,26 @@ module ietf-hardware {
               'class', 'parent', 'parent-rel-pos' that are equal to
               the detected values, then:
 
-           1a. If the configured entry has a value for 'mfg-name'
-               that is equal to the detected value, or if the
-               'mfg-name' value cannot be detected, then the entry is
-               initialized with the configured values for all
-               configured leafs, including the 'name'.
+           1a. If the configured entry has a value for 'mfg-name' that
+               is equal to the detected value, or if the 'mfg-name'
+               value cannot be detected, then the list entry in the
+               operational state is initialized with the configured
+               values for all configured nodes, including the 'name'.
 
-               Otherwise, the entry is initialized with values for
-               all nodes as detected by the implementation.  The
-               implementation may raise an alarm that informs about
-               the 'mfg-name' mismatch condition.  How this is done
-               is outside the scope of this document.
+               Otherwise, the list entry in the operational state is
+               initialized with values for all nodes as detected by
+               the implementation.  The implementation may raise an
+               alarm that informs about the 'mfg-name' mismatch
+               condition.  How this is done is outside the scope of
+               this document.
 
            1b. Otherwise (i.e., there is no matching configuration
-               entry), the entry is initialized with values for all
-               nodes as detected by the implementation.
+               entry), the list entry in the operational state is
+               initialized with values for all nodes as detected by
+               the implementation.
 
-         If the /hardware/component list in the intended
-         configuration is modified (i.e., someone changed the
-         configuration), then the system MUST behave as if it
+         If the /hardware/component list in the intended configuration
+         is modified, then the system MUST behave as if it
          re-initializes itself, and follow the procedure in (1).";
 
       reference "RFC 6933: entPhysicalEntry";
@@ -739,10 +743,7 @@ module ietf-hardware {
           "The vendor-specific serial number string for the
            component.  The preferred value is the serial number
            string actually printed on the component itself (if
-           present).
-
-           If a value for this node has been configured, the server
-           MUST use this value in the operational datastore.";
+           present).";
         reference "RFC 6933: entPhysicalSerialNum";
       }
 
@@ -786,11 +787,9 @@ module ietf-hardware {
            network manager, and provides a non-volatile 'handle' for
            the component.
 
-           If a value for this node has been configured, the server
-           MUST use this value in the operational datastore.  If no
-           such value has been configured, the server MAY set the
+           If no configured value exists, the server MAY set the
            value of this node to a locally unique value in the
-           operational datastore.
+           operational state.
 
            A server implementation MAY map this leaf to the
            entPhysicalAlias MIB object.  Such an implementation needs
@@ -806,9 +805,6 @@ module ietf-hardware {
         description
           "This node is a user-assigned asset tracking identifier for
            the component.
-
-           If a value for this node has been configured, the server
-           MUST use this value in the operational datastore.
 
            A server implementation MAY map this leaf to the
            entPhysicalAssetID MIB object.  Such an implementation
@@ -845,10 +841,7 @@ module ietf-hardware {
         type inet:uri;
         description
           "This node contains identification information about the
-           component.
-
-           If values for this node has been configured, the server
-           MUST use these values in the operational datastore.";
+           component.";
         reference "RFC 6933: entPhysicalUris";
       }
 
@@ -1064,7 +1057,7 @@ module ietf-hardware {
     description
       "A hardware-state-change notification is generated when the
        value of /hardware/last-change changes in the operational
-       datastore.";
+       state.";
     reference "RFC 6933, entConfigChange";
   }
 

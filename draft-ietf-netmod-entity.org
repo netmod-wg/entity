@@ -122,7 +122,7 @@ objects in the ENTITY-MIB.
 * Relationship to ENTITY-SENSOR-MIB
 
 If the device implements the ENTITY-SENSOR-MIB ^RFC3433^, each entry
-the in "/hardware/component" list where the container "sensor-data"
+in the "/hardware/component" list where the container "sensor-data"
 exists is mapped to one EntPhySensorEntry.
 
 -- YANG data nodes and related ENTITY-SENSOR-MIB objects
@@ -140,7 +140,7 @@ exists is mapped to one EntPhySensorEntry.
 * Relationship to ENTITY-STATE-MIB
 
 If the device implements the ENTITY-STATE-MIB ^RFC4268^, each entry
-the in "/hardware/component" list where the container "state"
+in the "/hardware/component" list where the container "state"
 exists is mapped to one EntStateEntry.
 
 -- YANG data nodes and related ENTITY-SENSOR-MIB objects
