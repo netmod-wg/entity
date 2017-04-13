@@ -32,8 +32,8 @@ module ietf-hardware {
      Editor:   Dan Romascanu
                <mailto:dromasca@gmail.com>";
 
-  // RFC Ed.: replace XXXX and YYYY with actual RFC numbers and remove
-  // this note.
+  // RFC Ed.: replace XXXX and YYYY with actual RFC numbers and
+  // remove this note.
 
   description
     "This module contains a collection of YANG definitions for
@@ -597,11 +597,12 @@ module ietf-hardware {
               'class', 'parent', 'parent-rel-pos' that are equal to
               the detected values, then:
 
-           1a. If the configured entry has a value for 'mfg-name' that
-               is equal to the detected value, or if the 'mfg-name'
-               value cannot be detected, then the list entry in the
-               operational state is initialized with the configured
-               values for all configured nodes, including the 'name'.
+           1a. If the configured entry has a value for 'mfg-name'
+               that is equal to the detected value, or if the
+               'mfg-name' value cannot be detected, then the list
+               entry in the operational state is initialized with the
+               configured values for all configured nodes, including
+               the 'name'.
 
                Otherwise, the list entry in the operational state is
                initialized with values for all nodes as detected by
@@ -615,9 +616,9 @@ module ietf-hardware {
                initialized with values for all nodes as detected by
                the implementation.
 
-         If the /hardware/component list in the intended configuration
-         is modified, then the system MUST behave as if it
-         re-initializes itself, and follow the procedure in (1).";
+         If the /hardware/component list in the intended
+         configuration is modified, then the system MUST behave as if
+         it re-initializes itself, and follow the procedure in (1).";
 
       reference "RFC 6933: entPhysicalEntry";
 
