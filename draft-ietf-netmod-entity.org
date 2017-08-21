@@ -8,7 +8,7 @@ on a single server.
 This document defines a YANG ^RFC7950^ data model
 for the management of hardware on a single server.
 
-The data model includes configuration data and state data (status
+The data model includes configuration and system state (status
 information and counters for the collection of statistics).
 
 ** Terminology
@@ -17,6 +17,16 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14, ^RFC2119^.
+
+The following terms are defined in
+^I-D.ietf-netmod-revised-datastores^ and are not redefined here:
+
+- client
+- server
+- configuration
+- system state
+- operational state datastore
+- intended configuration datastore
 
 *** Tree Diagrams
 
@@ -96,7 +106,7 @@ the "class" leaf.
 The following tables list the YANG data nodes with corresponding
 objects in the ENTITY-MIB.
 
--- YANG data nodes and related ENTITY-MIB objects
+-- YANG Data Nodes and Related ENTITY-MIB Objects
 | YANG data node in /hardware/component | ENTITY-MIB object                      |
 |---------------------------------------+----------------------------------------|
 | name                                  | entPhysicalName                        |
@@ -125,7 +135,7 @@ If the device implements the ENTITY-SENSOR-MIB ^RFC3433^, each entry
 in the "/hardware/component" list where the container "sensor-data"
 exists is mapped to one EntPhySensorEntry.
 
--- YANG data nodes and related ENTITY-SENSOR-MIB objects
+-- YANG Data Nodes and Related ENTITY-SENSOR-MIB Objects
 | YANG data node in /hardware/component/sensor-data | ENTITY-SENSOR-MIB object    |
 |---------------------------------------------------+-----------------------------|
 | value                                             | entPhySensorValue           |
@@ -143,7 +153,7 @@ If the device implements the ENTITY-STATE-MIB ^RFC4268^, each entry
 in the "/hardware/component" list where the container "state"
 exists is mapped to one EntStateEntry.
 
--- YANG data nodes and related ENTITY-SENSOR-MIB objects
+-- YANG Data Nodes and Related ENTITY-SENSOR-MIB Objects
 | YANG data node in /hardware/component/state | ENTITY-STATE-MIB object |
 |---------------------------------------------+-------------------------|
 | state-last-changed                          | entStateLastChanged     |
@@ -155,9 +165,9 @@ exists is mapped to one EntStateEntry.
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-03-07.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-08-21.yang"
 
-!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-03-07.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-08-21.yang"
 
 * IANA Considerations @iana@
 

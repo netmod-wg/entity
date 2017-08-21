@@ -57,7 +57,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2017-03-29 {
+  revision 2017-08-21 {
     description
       "Initial revision.";
     reference
@@ -574,7 +574,7 @@ module ietf-hardware {
       config false;
       description
         "The time the '/hardware/component' list changed in the
-         operational state.";
+         operational state datastore.";
     }
 
     list component {
@@ -583,43 +583,43 @@ module ietf-hardware {
         "List of components.
 
          When the server detects a new hardware component, it
-         initializes a list entry in the operational state.
+         initializes a list entry in the operational state datastore.
 
          If the server does not support configuration of hardware
-         components, list entries in the operational state are
-         initialized with values for all nodes as detected by the
+         components, list entries in the operational state datastore
+         are initialized with values for all nodes as detected by the
          implementation.
 
          Otherwise, the following procedure is followed:
 
            1. If there is an entry in the /hardware/component list in
-              the intended configuration with values for the nodes
-              'class', 'parent', 'parent-rel-pos' that are equal to
-              the detected values, then:
+              the intended configuration datastore with values for
+              the nodes 'class', 'parent', 'parent-rel-pos' that are
+              equal to the detected values, then:
 
            1a. If the configured entry has a value for 'mfg-name'
                that is equal to the detected value, or if the
                'mfg-name' value cannot be detected, then the list
-               entry in the operational state is initialized with the
-               configured values for all configured nodes, including
-               the 'name'.
+               entry in the operational state datastore is
+               initialized with the configured values for all
+               configured nodes, including the 'name'.
 
-               Otherwise, the list entry in the operational state is
-               initialized with values for all nodes as detected by
-               the implementation.  The implementation may raise an
-               alarm that informs about the 'mfg-name' mismatch
-               condition.  How this is done is outside the scope of
-               this document.
+               Otherwise, the list entry in the operational state
+               datastore is initialized with values for all nodes as
+               detected by the implementation.  The implementation
+               may raise an alarm that informs about the 'mfg-name'
+               mismatch condition.  How this is done is outside the
+               scope of this document.
 
            1b. Otherwise (i.e., there is no matching configuration
-               entry), the list entry in the operational state is
-               initialized with values for all nodes as detected by
-               the implementation.
+               entry), the list entry in the operational state
+               datastore is initialized with values for all nodes as
+               detected by the implementation.
 
          If the /hardware/component list in the intended
-         configuration is modified, then the system MUST behave as if
-         it re-initializes itself, and follow the procedure in (1).";
-
+         configuration datastore is modified, then the system MUST
+         behave as if it re-initializes itself, and follow the
+         procedure in (1).";
       reference "RFC 6933: entPhysicalEntry";
 
       leaf name {
@@ -790,7 +790,7 @@ module ietf-hardware {
 
            If no configured value exists, the server MAY set the
            value of this node to a locally unique value in the
-           operational state.
+           operational state datastore.
 
            A server implementation MAY map this leaf to the
            entPhysicalAlias MIB object.  Such an implementation needs
@@ -1058,7 +1058,7 @@ module ietf-hardware {
     description
       "A hardware-state-change notification is generated when the
        value of /hardware/last-change changes in the operational
-       state.";
+       state datastore.";
     reference "RFC 6933, entConfigChange";
   }
 
