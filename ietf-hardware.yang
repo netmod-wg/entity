@@ -691,9 +691,20 @@ module ietf-hardware {
         description
           "An indication of the relative position of this child
            component among all its sibling components.  Sibling
-           components are defined as components that share the same
-           instance values of each of the 'parent' and 'class'
-           nodes.";
+           components are defined as components that:
+
+             o Share the same value of the 'parent' node; and
+
+             o Share a common base identity for the 'class' node.
+
+           Note that the last rule gives implementations flexibility
+           in how components are numbered.  For example, some
+           implementations might have a single number series for all
+           components derived from 'ianahw:port', while some others
+           might have different number series for different
+           components with identities derived from 'ianahw:port' (for
+           example, one for RJ45 and one for SFP).";
+
         reference "RFC 6933: entPhysicalParentRelPos";
       }
 
