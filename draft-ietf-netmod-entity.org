@@ -171,6 +171,19 @@ exists is mapped to one EntStateEntry.
 
 * IANA Considerations @iana@
 
+This document defines the initial version of the IANA-maintained
+"iana-hardware" YANG module.
+
+The "iana-hardware" YANG module is intended to reflect the
+"IANA-ENTITY-MIB" MIB module so that if a new enumeration is added to
+the "IANAPhysicalClass" TEXTUAL-CONVENTION, the same class is added as
+an identity derived from "ianahw:hardware-class".
+
+When the "iana-hardware" YANG module is updated, a new "revision"
+statement must be added in front of the existing revision statements.
+
+** URI Registrations
+
 This document registers two URIs in the IETF XML registry
 ^RFC3688^. Following the format in RFC 3688, the following
 registrations are requested to be made.
@@ -182,6 +195,8 @@ registrations are requested to be made.
      URI: urn:ietf:params:xml:ns:yang:ietf-hardware
      Registrant Contact: The IESG.
      XML: N/A, the requested URI is an XML namespace.
+
+** YANG Module Registrations
 
 This document registers two YANG modules in the YANG Module Names
 registry ^RFC6020^.
