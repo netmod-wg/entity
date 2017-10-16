@@ -165,9 +165,9 @@ exists is mapped to one EntStateEntry.
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-08-21.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-10-16.yang"
 
-!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-08-21.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-10-16.yang"
 
 * IANA Considerations @iana@
 

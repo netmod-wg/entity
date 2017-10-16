@@ -57,7 +57,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2017-08-21 {
+  revision 2017-10-16 {
     description
       "Initial revision.";
     reference
