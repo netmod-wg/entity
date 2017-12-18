@@ -12,7 +12,7 @@ pyang ?= pyang
 
 draft := $(basename $(lastword $(sort $(wildcard draft-*.xml)) $(sort $(wildcard draft-*.md)) $(sort $(wildcard draft-*.org)) ))
 
-trees = ietf-hardware.tree
+trees = ietf-hardware.tree ietf-hardware-state.tree
 
 ifeq (,$(draft))
 $(warning No file named draft-*.md or draft-*.xml or draft-*.org)

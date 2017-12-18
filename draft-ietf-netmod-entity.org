@@ -11,12 +11,19 @@ for the management of hardware on a single server.
 The data model includes configuration and system state (status
 information and counters for the collection of statistics).
 
+The data model in this document is designed to be compliant with the
+Network Management Datastore Architecture (NMDA)
+^I-D.ietf-netmod-revised-datastores^.  For implementations that do not
+yet support NMDA, a temporary module with system state data only is
+defined in ^hw-state^.
+
 ** Terminology
 
 The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described in BCP
-14, ^RFC2119^.
+14, ^RFC2119^ ^RFC8174^ when, and only when, they appear in all capitals,
+as shown here.
 
 The following terms are defined in
 ^I-D.ietf-netmod-revised-datastores^ and are not redefined here:
@@ -28,20 +35,10 @@ The following terms are defined in
 - operational state
 - intended configuration
 
-*** Tree Diagrams
+** Tree Diagrams
 
-A simplified graphical representation of the data model is used in
-this document.  The meaning of the symbols in these
-diagrams is as follows:
-
-- Brackets "[" and "]" enclose list keys.
-- Abbreviations before data node names: "rw" means configuration
- data (read-write) and "ro" state data (read-only).
-- Symbols after data node names: "?" means an optional node, "!" means
- a presence container, and "*" denotes a list and leaf-list.
-- Parentheses enclose choice and case nodes, and case nodes are also
-marked with a colon (":").
-- Ellipsis ("...") stands for contents of subtrees that are not shown.
+Tree diagrams used in this document follow the notation defined in
+^I-D.ietf-netmod-yang-tree-diagrams^.
 
 * Objectives
 
@@ -165,9 +162,9 @@ exists is mapped to one EntStateEntry.
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-10-16.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-12-18.yang"
 
-!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-10-16.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-12-18.yang"
 
 * IANA Considerations @iana@
 
@@ -184,7 +181,7 @@ statement must be added in front of the existing revision statements.
 
 ** URI Registrations
 
-This document registers two URIs in the IETF XML registry
+This document registers three URIs in the IETF XML registry
 ^RFC3688^. Following the format in RFC 3688, the following
 registrations are requested to be made.
 
@@ -196,9 +193,13 @@ registrations are requested to be made.
      Registrant Contact: The IESG.
      XML: N/A, the requested URI is an XML namespace.
 
+     URI: urn:ietf:params:xml:ns:yang:ietf-hardware-state
+     Registrant Contact: The IESG.
+     XML: N/A, the requested URI is an XML namespace.
+
 ** YANG Module Registrations
 
-This document registers two YANG modules in the YANG Module Names
+This document registers three YANG modules in the YANG Module Names
 registry ^RFC6020^.
 
   name:         iana-hardware
@@ -211,30 +212,39 @@ registry ^RFC6020^.
   prefix:       hw
   reference:    RFC XXXX
 
+  name:         ietf-hardware-state
+  namespace:    urn:ietf:params:xml:ns:yang:ietf-hardware-state
+  prefix:       hw-state
+  reference:    RFC XXXX
+
 * Security Considerations
 
-The YANG module defined in this memo is designed to be accessed via
-the NETCONF protocol ^RFC6241^.  The lowest NETCONF layer is the secure
-transport layer, and the mandatory-to-implement secure transport is
-Secure Shell (SSH) ^RFC6242^.  The NETCONF access control model
-^RFC6536^ provides the means to restrict access for particular NETCONF
-users to a pre-configured subset of all available NETCONF protocol
+The YANG modules defined in this document are designed to be accessed
+via network management protocols such as NETCONF ^RFC6241^ or RESTCONF
+^RFC8040^. The lowest NETCONF layer is the secure transport layer, and
+the mandatory-to-implement secure transport is Secure Shell (SSH)
+^RFC6242^. The lowest RESTCONF layer is HTTPS, and the
+mandatory-to-implement secure transport is TLS ^RFC5246^.
+
+The NETCONF access control model ^RFC6536^ provides the means to
+restrict access for particular NETCONF or RESTCONF users to a
+preconfigured subset of all available NETCONF or RESTCONF protocol
 operations and content.
 
-There are a number of data nodes defined in this YANG module that are
-writable/creatable/deletable (i.e., config true, which is the
-default).  These data nodes may be considered sensitive or vulnerable
-in some network environments. Write operations (e.g., edit-config) to
-these data nodes without proper protection can have a negative effect
-on network operations. These are the subtrees and data nodes and their
-sensitivity/vulnerability:
+There are a number of data nodes defined in the YANG module
+"ietf-hardware" that are writable/creatable/deletable (i.e., config
+true, which is the default).  These data nodes may be considered
+sensitive or vulnerable in some network environments. Write operations
+(e.g., edit-config) to these data nodes without proper protection can
+have a negative effect on network operations. These are the subtrees
+and data nodes and their sensitivity/vulnerability:
 
 = /hardware/component/admin-state:
 Setting this node to 'locked' or 'shutting-down' can cause disruption
 of services ranging from those running on a port to those on an entire
 device, depending on the type of component.
 
-Some of the readable data nodes in this YANG module may be considered
+Some of the readable data nodes in these YANG modules may be considered
 sensitive or vulnerable in some network environments. It is thus
 important to control read access (e.g., via get, get-config, or
 notification) to these data nodes. These are the subtrees and data
@@ -259,6 +269,20 @@ helpful comments on various draft versions of this document:  Bart
 Bogaert, Timothy Carey, William Lupton, Juergen Schoenwaelder.
 
 *! start-appendix
+
+* Hardware State Data Model @hw-state@
+
+This non-normative appendix contains a data model designed as a
+temporary solution for implementations that do not yet support the
+Network Management Datastore Architecture (NMDA) defined in
+^I-D.ietf-netmod-revised-datastores^.  It has the following structure:
+
+!! include-figure ietf-hardware-state.tree
+
+** Hardware State YANG Module
+
+!! include-figure ietf-hardware-state.yang extract-to="ietf-hardware-state@2017-12-18.yang"
+
 
 {{document:
     name ;
