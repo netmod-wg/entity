@@ -50,11 +50,11 @@ model.
 - There are many important information and states about the
   components, which needs to be collected from the devices which
   support the hardware data model.
-- The hardware data model SHOULD be suitable for new implementations
+- The hardware data model should be suitable for new implementations
   to use as is.
 - The hardware data model defined in this document can be implemented
   on a system that also implements ENTITY-MIB, thus the mapping
-  between the hardware data model and ENTITY-MIB SHOULD be clear.
+  between the hardware data model and ENTITY-MIB should be clear.
 - The data model should support pre-provisioning of hardware
   components.
 
@@ -219,12 +219,13 @@ registry ^RFC6020^.
 
 * Security Considerations
 
-The YANG modules defined in this document are designed to be accessed
-via network management protocols such as NETCONF ^RFC6241^ or RESTCONF
-^RFC8040^. The lowest NETCONF layer is the secure transport layer, and
-the mandatory-to-implement secure transport is Secure Shell (SSH)
-^RFC6242^. The lowest RESTCONF layer is HTTPS, and the
-mandatory-to-implement secure transport is TLS ^RFC5246^.
+The YANG modules specified in this document define a schema for data
+that is designed to be accessed via network management protocols such
+as NETCONF ^RFC6241^ or RESTCONF ^RFC8040^. The lowest NETCONF layer
+is the secure transport layer, and the mandatory-to-implement secure
+transport is Secure Shell (SSH) ^RFC6242^. The lowest RESTCONF layer
+is HTTPS, and the mandatory-to-implement secure transport is TLS
+^RFC5246^.
 
 The NETCONF access control model ^RFC6536^ provides the means to
 restrict access for particular NETCONF or RESTCONF users to a
