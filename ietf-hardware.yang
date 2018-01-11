@@ -412,12 +412,12 @@ module ietf-hardware {
         description
           "Data scaling factor of 10^12.";
       }
-      enum exa {
+      enum peta {
         value 14;
         description
           "Data scaling factor of 10^15.";
       }
-      enum peta {
+      enum exa {
         value 15;
         description
           "Data scaling factor of 10^18.";
@@ -447,7 +447,7 @@ module ietf-hardware {
   }
 
   typedef sensor-value-precision {
-    type int32 {
+    type int8 {
       range "-8 .. 9";
     }
     description
@@ -476,9 +476,9 @@ module ietf-hardware {
 
        For example, a component representing a temperature sensor
        that can measure 0 degrees to 100 degrees C in 0.1 degree
-       increments, +/- 0.05 degrees, would have an
-       sensor-value-precision value of '1', an sensor-value-scale
-       value of 'units', and an sensor-value ranging from '0' to
+       increments, +/- 0.05 degrees, would have a
+       sensor-value-precision value of '1', a sensor-value-scale
+       value of 'units', and a sensor-value ranging from '0' to
        '1000'.  The sensor-value would be interpreted as
        'degrees C * 10'.";
     reference "RFC 3433: EntitySensorPrecision";
@@ -489,7 +489,7 @@ module ietf-hardware {
       range "-1000000000 .. 1000000000";
     }
     description
-     "A node using this data type represents an sensor value.
+     "A node using this data type represents a sensor value.
 
       A node of this type SHOULD be defined together with nodes of
       type sensor-value-type, sensor-value-scale, and
