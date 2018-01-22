@@ -82,9 +82,11 @@ from one of them.
 * Relationship to ENTITY-MIB
 
 If the device implements the ENTITY-MIB ^RFC6933^, each entry in the
-"/hardware-state/component" list is mapped to one EntPhysicalEntry.
-Objects that are writable in the MIB are mapped to nodes in the
-"/hardware/component" list.
+"/hardware/component" list in the operational state is mapped to one
+EntPhysicalEntry.  Objects that are writable in the MIB are mapped to
+"config true" nodes in the "/hardware/component" list, except
+"entPhysicalSerialNum" which is writable in the MIB, but "config
+false" in the YANG module.
 
 The "physical-index" leaf MUST contain the value of the corresponding
 entPhysicalEntry's entPhysicalIndex.
@@ -162,9 +164,9 @@ exists is mapped to one EntStateEntry.
 
 * Hardware YANG Module
 
-!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2017-12-18.yang"
+!! include-figure ietf-hardware.yang extract-to="ietf-hardware@2018-01-15.yang"
 
-!! include-figure iana-hardware.yang extract-to="iana-hardware@2017-12-18.yang"
+!! include-figure iana-hardware.yang extract-to="iana-hardware@2018-01-15.yang"
 
 * IANA Considerations @iana@
 

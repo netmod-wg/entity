@@ -42,7 +42,7 @@ module ietf-hardware {
      This data model is designed for the Network Management Datastore
      Architecture defined in RFC YYYY.
 
-     Copyright (c) 2017 IETF Trust and the persons identified as
+     Copyright (c) 2018 IETF Trust and the persons identified as
      authors of the code.  All rights reserved.
 
      Redistribution and use in source and binary forms, with or
@@ -57,7 +57,7 @@ module ietf-hardware {
 
   // RFC Ed.: update the date below with the date of RFC publication
   // and remove this note.
-  revision 2017-12-18 {
+  revision 2018-01-15 {
     description
       "Initial revision.";
     reference
@@ -597,9 +597,7 @@ module ietf-hardware {
               'class', 'parent', 'parent-rel-pos' that are equal to
               the detected values, then the list entry in operational
               state is initialized with the configured values,
-              including the 'name'.  The leafs 'serial-num',
-              'mfg-name', and 'model-name' are treated specially; see
-              their descriptions for details.
+              including the 'name'.
 
            2. Otherwise (i.e., there is no matching configuration
               entry), the list entry in the operational state is
@@ -739,20 +737,18 @@ module ietf-hardware {
 
       leaf serial-num {
         type string;
+        config false;
         description
           "The vendor-specific serial number string for the
            component.  The preferred value is the serial number
            string actually printed on the component itself (if
-           present).
-
-           This leaf can be configured.  The configured value is used
-           only if the server cannot determine the vendor-specific
-           serial number from the component itself.";
+           present).";
         reference "RFC 6933: entPhysicalSerialNum";
       }
 
       leaf mfg-name {
         type string;
+        config false;
         description
           "The name of the manufacturer of this physical component.
            The preferred value is the manufacturer name string
@@ -765,16 +761,13 @@ module ietf-hardware {
 
            If the manufacturer name string associated with the
            physical component is unknown to the server, then this
-           node is not instantiated.
-
-           This leaf can be configured.  The configured value is used
-           only if the server cannot determine the vendor-specific
-           serial number from the component itself.";
+           node is not instantiated.";
         reference "RFC 6933: entPhysicalMfgName";
       }
 
       leaf model-name {
         type string;
+        config false;
         description
           "The vendor-specific model name identifier string
            associated with this physical component.  The preferred
@@ -783,11 +776,7 @@ module ietf-hardware {
 
            If the model name string associated with the physical
            component is unknown to the server, then this node is not
-           instantiated.
-
-           This leaf can be configured.  The configured value is used
-           only if the server cannot determine the vendor-specific
-           serial number from the component itself.";
+           instantiated.";
         reference "RFC 6933: entPhysicalModelName";
       }
 
